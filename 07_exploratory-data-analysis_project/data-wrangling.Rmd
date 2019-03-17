@@ -1,0 +1,359 @@
+---
+title: "League of Legends Data Wrangling"
+author: "Simon Thornewill von Essen"
+date: "Janurary 25, 2018"
+output: html_document
+---
+
+# Introduction
+
+In this R-markdown file, I am going to be cleaning and wrangling the data for
+the League of Legends Ranked Matched Dataset. (See the references in the 
+README.md file in this directory for the link to this dataset.)
+
+First thing I am going to do is to set my working directory, libraries I will be
+using and import the relevant data.
+
+```{r Import Data and Packages, warning=FALSE, warning=FALSE, message=FALSE}
+# Set Working Directory
+setwd("~/Documents/git-repos/udacity/Udacity-Project---Create-a-Tableau-Story")
+
+# Import Libraries
+library(dplyr)
+library(data.table)
+
+# Import Data
+df_champs <- read.csv("data/pre-wrangle/champs.csv")
+df_matches <- read.csv("data/pre-wrangle/matches.csv")
+df_participants <- read.csv("data/pre-wrangle/participants.csv")
+df_stats1 <- read.csv("data/pre-wrangle/stats1.csv")
+df_stats2 <- read.csv("data/pre-wrangle/stats2.csv")
+df_teambans <- read.csv("data/pre-wrangle/teambans.csv")
+df_teamstats <- read.csv("data/pre-wrangle/teamstats.csv")
+```
+
+# Getting to know the data
+
+This dataset takes the form of a relational database to save on space.
+
+I should keep and remove data based on what I am interested in.
+
+First, we should take a look at the structure of these dataframes so that we
+have some understanding of what sort of data they contain and what sorts of 
+questions I would like to ask the data.
+
+One drawback of this dataset is that it is not really clear what ID relates with
+other dataframes. This is something the creator of this dataset could have been
+more careful about. (Although I was able to piece things together in the end.)
+
+## champs.csv
+
+```{r}
+str(df_champs)
+
+```
+
+We can see that this is a relatively small dataframe containing only the 
+various champions in the game and their champion IDs.
+
+I used to play a lot league of legends 5 or 6 years ago, so I am familliar with
+most of the champions, their roles and their strengths and weaknesses. I will 
+not be very familliar with newer characters or any changes to the meta while I
+was away.
+
+## matches.csv
+
+```{r}
+str(df_matches)
+
+```
+
+The matches file has a little more information inside of it. Containing id, 
+gameid (matched with teambans and teamstats) in df_participants), platformid 
+(server on which the game was played), queueid (only ranked-solo games shown in 
+dataset), seasonid, duration (in seconds), creation (timestamp in $\mu$seconds) 
+and game version (patch). 
+
+Some of these columns are less interesting such as version, if I want to track 
+the meta-game across seasons then seasonid will be important to keep. If I want
+to only investigate the current meta-game then I should make sure I create 
+appropriate filters for the data.
+
+Columns such as "queueid" and "platformid" seem relatively useless 
+
+## participants.csv
+
+```{r}
+str(df_participants)
+
+```
+
+Note that ss stands for "summoner spell" which is a spell that is selected 
+during character selection and is independent of chosen champion. These are 
+spells with relatively long cooldowns (a length of time where you cannot use 
+this spell after casting it) and are relatively powerful. Two populat examples 
+of such spells are finishing moves such as "ignite" and "flash" to help save a
+champion in tight spots.
+
+This dataframe contains a number of foreign keys such as "matchid", which relates
+to teambans and teamstats, "championid" which corresponds with id in the champs 
+dataframe and ID which corresponds to the df_stats dataframes.
+
+role and position seem to have a slight overlap, the difference being that the
+"BOT" position could refer to either being the "AD carry" or the "support" roles
+denoted by "duo_carry" and "duo", respectively.
+
+The most interesting columns in this set is the role and the position played by
+each player and champion. 
+
+## stats1.csv and stats2.csv
+
+```{r}
+str(df_stats1)
+
+```
+
+Stats is short for the player-stats, and contains general statistics of what 
+each player did during a game.
+
+What columns I am interested in from this dataset will depend on what question
+I decide to answer. 
+
+Different metrics will reveal different parts of the data.
+
+## teambans.csv
+
+```{r}
+str(df_teambans)
+
+```
+
+Before a ranked match begins, a couple of champions are banned from selection.
+This means that if a team wants to block a certain kind of strategy  or if there
+is a champion that is really overpowered then they can make sure that they do 
+not joint he fray until Riot Inc. corrects the cause of their overpowered 
+nature.
+
+## teamstats.csv
+
+```{r}
+str(df_teamstats)
+
+```
+
+It should be noted that teamstats and teambans are both related by matchid and
+teamid. 
+
+# What questions do I want to find out?
+
+I want to know what the strongest and weakest characters in the meta are. 
+However, it might not be easy to compare champions since a number of champions
+can take multiple positions and so I should consider what the strongest 
+characters for each position might be. 
+
+It should be noted that there are a couple of common metrics which will decide
+how strong a champion is, how much damage they do throughout the course of a 
+game, how many kills or assists they have, how little they have died, how 
+much/little damage they have taken and how many minion/creature kills they have.
+
+This is actually a pretty good way to measure most roles except for the support
+classes which are better guaged by how much damage they take, how much they have
+healed themselves and other champions, how many assists (not kills) they have 
+and how few deaths they have.
+
+It is also worth noting that the characters that are most commonly banned will
+also be champions that are incredibly powerful, so that should be investigated
+as well. At the very least, there is no point in choosing a brokenly powerful
+champion when it will get banned right away.
+
+If I want to investigate the meta then I should make sure that changes make to 
+the game that happen throughout patches which make certain champions more
+powerful than each other are taken into account. Although this might not vary 
+too much when considering individual patches, many large changes take place 
+between seasons which means that I should make sure to take the latest season.
+
+
+# Removing unecessary data
+
+## df_matches
+
+I will begun my cleaning at the matches stage since there are a number of 
+columns that I would like to eliminate and because I can limit the season number
+at this section and then use the IDs remaining to figure out what rows I should
+remove from "Participants" and so on.
+
+```{r}
+# Filter Season
+df_matches <- subset(df_matches, seasonid==8)
+
+# Name Columns to remove
+remove_cols <- c("platformid", "queueid", "creation", "version", "seasonid")
+
+# Remove columns
+df_matches <- df_matches[ , !(names(df_matches) %in% remove_cols)]
+
+# Remove vector
+rm(remove_cols)
+
+# Rename gameid to matchid
+df_matches <- rename(df_matches, matchid=id)
+
+# Remove matchids that don't appear in df_participants
+df_participants <- df_participants[df_participants$matchid %in% df_matches$matchid, ]
+
+```
+
+## df_participants
+
+I also that the Jungle position has "none" in the none field. I just want to 
+make sure that this is consistent.
+
+We can see that the number of distinct roles for the "JUNGLE" position is 
+`r n_distinct(subset(df_participants, position=="JUNGLE")$role)`, while the 
+number of positions for the "NONE" role is
+`r n_distinct(subset(df_participants, role=="NONE")$position)`.
+
+This means that there are other positions that have the "NONE" role.
+
+```{r}
+count(subset(df_participants, role=="NONE"), position)
+
+```
+
+We can see here that there is a high probability that a player who has the 
+"NONE" position has a high chance of being a jungler, but sometimes the lanes 
+also have this position. My guess is that these values were determined by where
+the players were located towards the start of the game and these players went
+absent to attack players on other lanes.
+
+Indeed, further investigation into the various roles that a position can have,
+we can see that most positions end up having multiple roles, which seems to
+complicate things a bit.
+
+However, I will not wrangle the data here because, hopefully, the amount of 
+non-standard plays are relatively low and so they should not interfere with the 
+data too much. 
+
+## df_teambans
+
+Looking at the teambans dataframe, most of the data seems to be useful and so
+I should keep it.
+
+The only thing I want to make sure I do is to remove gameids from df_teambans
+that are not found in df_participants
+
+```{r}
+# Remove matchids that don't appear in df_participants
+df_teambans <- df_teambans[df_teambans$matchid %in% df_participants$matchid, ]
+
+```
+
+## df_teamstsats
+
+The same goes for teamstats. I could remove the columns which include "harry"
+(short for herald, apparently) because I never played a game where it was 
+relevant and it makes the files a little better than they need to be
+
+```{r}
+# Name Columns to remove
+remove_cols <- c("firstharry", "harrykills")
+
+# Remove columns
+df_teamstats <- df_teamstats[ , (!names(df_teamstats) %in% remove_cols)]
+
+# Remove vector
+rm(remove_cols)
+
+# Remove matchids that don't appear in df_participants
+df_teamstats <- df_teamstats[df_teamstats$matchid %in% df_participants$matchid, ]
+
+```
+
+## df_stats 1 and 2
+
+Finally, I would like to remove a couple of columns from df_stats because it is
+unlikely that I will use all of the columns and I can save on space in random
+access memory this way as well.
+
+```{r}
+# Name Columns to remove
+remove_cols <- c("item1", "item2", "item3", "item4", "item5", "item6", 
+                 "trinket", "doublekills", "tripplekills", "quadrakills", 
+                 "pentakills", "legendarykills", "visionscore", "pinksbought")
+
+# Remove columns
+df_stats1 <- df_stats1[ , (!names(df_stats1) %in% remove_cols)]
+df_stats2 <- df_stats2[ , (!names(df_stats2) %in% remove_cols)]
+
+# Remove vector
+rm(remove_cols)
+
+# Remove ids that don't appear in df_participants
+df_stats1 <- df_stats1[df_stats1$id %in% df_participants$id, ]
+df_stats2 <- df_stats2[df_stats2$id %in% df_participants$id, ]
+
+# Concatinate dataframes like a madman
+df_stats <- rbind(df_stats1, df_stats2)
+rm(df_stats1, df_stats2)
+
+```
+
+I removed items because I am currently unware of the typical builds used by each
+role. Investigating the different builds is outside of the scope of this 
+investigation and so I removed them. The information for multi-kills is also
+encoded in other columns such that they become a bit redundant. The same for
+vision score and potion/drinks bought(?).
+
+# Checking for missing values
+
+```{r}
+# Checking for missing values
+
+## df_champs
+sapply(df_champs, function(x) sum(is.na(x)))
+
+## df_participants
+sapply(df_participants, function(x) sum(is.na(x)))
+
+## df_stats
+sapply(df_stats, function(x) sum(is.na(x)))
+
+## df_teambans
+sapply(df_teambans, function(x) sum(is.na(x)))
+
+## df_teamstats
+sapply(df_teamstats, function(x) sum(is.na(x)))
+
+```
+
+Luckily, it seems like there are no missing values inside of this dataset, which
+is very nice!
+
+# Checking for duplicated values
+
+```{r}
+# Check for duplicates
+sum(duplicated(df_champs))
+sum(duplicated(df_participants))
+sum(duplicated(df_stats))
+sum(duplicated(df_teambans))
+sum(duplicated(df_teamstats))
+
+```
+
+It also seems that there are no duplicated values, which is good.
+
+Otherwise, it also seems that the dataframes in this dataset are consistent and
+appropriate, which is also good. 
+
+# Exporting and Saving Data
+
+```{r}
+write.csv(x=df_stats, file="data/wrangled/stats.csv")
+write.csv(x=df_matches, file="data/wrangled/matches.csv")
+write.csv(x=df_champs, file="data/wrangled/champs.csv")
+write.csv(x=df_participants, file="data/wrangled/participants.csv")
+write.csv(x=df_teambans, file="data/wrangled/teambans.csv")
+write.csv(x=df_teamstats, file="data/wrangled/teamstats.csv")
+
+```
