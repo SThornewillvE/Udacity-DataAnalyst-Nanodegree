@@ -1,0 +1,1102 @@
+---
+title: "Udacity-Project---Exploring-Wine-Data"
+author: "Simon Thornewill von Essen"
+date: "Janurary 17, 2018"
+output: html_document
+---
+
+```{r Importing Packages, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Set working directory
+setwd("~/coding/git-repos/udacity/Udacity-Project---Exploring-Wine-Data")
+
+# Import Libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(gridExtra)
+
+# Import data
+df <- read.csv("data/wineQualityWhites.csv")
+
+```
+
+
+# General notes about the dataset
+
+Inputs are objective physical/chemical attributes, output (quality) is a 
+qualitative measurement based on the median of 3 seperate taste tasters 
+(0 - Very Bad, 10 - Very Excelent).
+
+There is no data on grape types, wine brand or selling price. 
+
+Before doing any serious work on the data I should try and get a feel for it 
+first:
+  - Read the wineQualityinfo.txt file to understand the features
+  - Create a dataframe with both red and white wine
+
+
+## Description of features
+
+  - Fixed acidity: non-volatile acids (tartaric acid) which account for the sour 
+  taste of wine - g/L
+  - Volatile acidity: volatile acids (acetic acid/vinegar) which give wine its 
+  nose - g/L
+  - Citric acid: account for the "fresh" taste - g/L
+  - Residual Sugar: Remaining sugar after fermentation 
+  - Chlorides: Saltiness of wine - g/L
+  - Free sulfur dioxide: Prevents alcohol oxidation, $SO_2$ reacts with oxygen 
+  instead of the alcohol to prevent formation of acetic acid (forms 2 eq. of 
+  $SO_3$) - mg/L
+  - Total sulfur dioxide:  - mg/L Bound and free sulfur dioxide
+  - density: mass/volume of wine - g/mL
+  - pH: concentration of $H^+$ ions in solution (log scale)
+  - sulphates: potassium sulphate additive, contributes to Free sulfur 
+  dioxide - g/L
+  - alcohol: % alcohol content
+  - quality: median measurement between 1 and 10
+
+
+## What are some questions I have of the data?
+
+  - What variables are correlated with quality?
+    - Special interest in "residual sugar", "pH", the various "acidity" features 
+    and "alcohol" content
+  - What does the average glass of white wine look like?
+  - How varied are tastes in wine? i.e. Are there wines that are clearly 
+  superior 
+  in quality or is it completely subjective? (random)
+  
+  
+## Possible biases
+
+  - There is no information on how intoxicated the testers became. Drunkeness 
+  probably plays a role in deciding the quality of the wine.
+  - Most, but not all compounds present in wine has been listed. Phenols and 
+  other [aromatic](https://en.wikipedia.org/wiki/Aromaticity) molecules which 
+  would 
+  contrubute to a wine's color/taste/smell have not been measured
+  - This data comes from the taste of connoisseurs, who have might different 
+  or more sentisive tastes than that of the general population, there is no way 
+  to account for this difference (if it exists) using the data at hand.
+
+## Notes about outliers
+
+Although there are some outliers that can be clearly seen during the first part
+of this investigation (Uni-variate plots), these outliers will not be removed
+because they should not have a large impact upon statistics.
+
+I am aware that there are statistical tests that can be used to remove outliers
+such as the g-test. However, this test can only remove a single datapoint from
+a dataset. 
+
+Outliers should only really be removed when there is fault with the measurement,
+investigation of the dataset up until this point does not suggest that this is
+an issue and as such these points will be left alone.
+
+# Quick Wrangling to fix the data
+
+Given that "fixed.acidity", "volatile.acidity", "chlorides", are simply 
+concentrations of tartaric acid, acetic acid and salt chorlides respectively, 
+I'll be renameing them. (As a chemist, this makes much more sene to me.)
+
+Density is also interesting because it measures a similar sort of thing to
+concentration. (i.e. How much stuff is there in an area of space?) Hence, I will
+also convert the value from g/cm to g/L so that it can be compared more easily
+to the other values of concentration.
+
+sulfur dioxide concentrations are also measured in mg/L instead of g/L, so I'll 
+change that to make sure the measurements are consistent for comparison across 
+variables.
+
+```{r Quick Wrangling, echo=FALSE, message=FALSE, warning=FALSE}
+
+# drop X from dataframes as it contains redundant information
+drops <- c("X")
+df <- df[, !names(df) %in% drops]
+rm(drops)
+
+# renaming df
+
+df <- rename(df, "tartaric.acid" = "fixed.acidity")
+df <- rename(df, "acetic.acid" = "volatile.acidity")
+df <- rename(df, "salt.chlorides" = "chlorides")
+
+# correcting sulfur df
+df$free.sulfur.dioxide <- df$free.sulfur.dioxide/1000
+df$total.sulfur.dioxide <- df$total.sulfur.dioxide/1000
+
+```
+
+---
+
+## Univariate Plots
+
+### PLot 1.1 - Residual Sugar
+
+```{r Residual Sugar Uni-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+# Univariate plott of residual sugar
+ggplot(aes(x=residual.sugar), data=df) +
+  geom_histogram(fill='#FD7373', alpha=0.7, bins=100) +
+  scale_x_continuous(breaks=seq(from=0, to=100, by=2)) +
+  ggtitle("Frequency of residual sugar content") +
+  xlab("Residual Sugar Conc. (g/L)") +
+  ylab("Count")
+```
+
+We can see in this historam of residual sugar that there are roughly two types
+of wine, one type that has very little sugar in it (between 1 and 2 g/L) with a 
+very small standard deviation and those type of wine which have more sugar whose 
+concentration varies more with a rough mean of 7.5 g/L.
+
+### Plot 1.2 - pH
+
+```{r pH Uni-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+# Univariate plott of residual sugar
+ggplot(aes(x=pH), data=df) +
+  geom_histogram(fill='#FD7373', alpha=0.7, bins=100) +
+  xlim(0, 7) +
+  ggtitle("Frequency of pH") +
+  xlab("pH") +
+  ylab("Count")
+```
+
+The distribution for pH is roughly normally distributed with a mean of 3.1 
+(acidic)and a standard deviation of 0.151. In relation to other food substances, 
+wine is as acidic as soda or orange juice but not as strong as vinegar or lemon 
+juice (pH = 2) and certainly not as strong as sulphuric acid (ph = 1)
+
+```{r pH Statistics, echo=FALSE, message=FALSE, warning=FALSE}
+mean(df$pH)
+sd(df$pH)
+```
+
+### Plot 1.3 - Acetic Acid
+
+```{r Acetic Acid Uni-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data=df) + 
+  geom_histogram(aes(x=acetic.acid), fill='#FD7373', alpha=0.6, bins=40, 
+                 labels="Acetic Acid") +
+  ggtitle("Histogram of Acetic Acid Concentrations") +
+  xlab("Acetic Acid Concentration (g/mL, log-transformed)") +
+  ylab("Count") 
+```
+
+We can also see that the Acetic Acid concentration follows a similar 
+log-distribution to the pH concentration with the long tail. This makes sense 
+since the two  variables are related due to acetic acid being acidic and pH 
+being a measure of acidity.
+
+The x-axis of the figure has not been transformed to a log scale because the
+values only cover one order of magnitude.
+
+However, it is not expected that acetic acid and pH will coincide very strongly
+because any molecule that is acidic (such as tartaric acid, originally named 
+fixed acidity) will also affect the pH.
+
+```{r Acetic Acid Stats, echo=FALSE, message=FALSE, warning=FALSE}
+cor(df$pH, df$acetic.acid)
+```
+
+Interestingly, although acetic acid concentration and pH have a similar 
+shape/distribution on a histogram, they do not correlate with each other very 
+strongly.
+
+I would like to explore the relationship between these two variables further in 
+the bivariate-graph section.
+
+It should be noted that pH is already on a log scale which is why it does not
+need to be transformed in order to create the bell curve as above.
+
+### Plot 1.4 - Tartaric Acid
+
+```{r Tartaric Acid Plot, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x=tartaric.acid), data=df) + 
+  geom_histogram(fill='#FD7373', alpha=0.6, 
+             labels="Tartaric Acid") +
+  ggtitle("Histogram of Tartaric Acid Concentration") +
+  xlab("Tartaric Acid Concentration (g/mL, log-transformed)") +
+  ylab("Count")
+```
+
+Tartaric Acid Concentration adheres more to a normal distribution and  seems to 
+have roughly one order of magnitude higher concentrations tan that of acetic 
+acid.
+
+This makes sense because Tartaric Acid (originally named fixed acidity) has a
+boiling point (275°C) almost 3 times as high as Acetic acid (118.1°C), hence the 
+name volatile acidity. This is reflected in the higher concentration of Tartaric
+acid present within the wine.
+
+### Plot 1.5 - Citric Acid 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x=citric.acid), data=df) + 
+  geom_histogram(fill='#FD7373', alpha=0.7) +
+  scale_x_log10() +
+  ggtitle("Histogram of Citric Acid Concentration") +
+  xlab("Citric Acid Concentration (g/mL, log-transformed)") +
+  ylab("Count")
+```
+
+It is also rather interesting that citric acid concentration does not follow a
+log-distributions such as tartaric acid and acetic acid. It also exists in similar
+concentrations as acetic acid.
+
+This leads me to wonder why wine has such high concentrations of tartaric acid,
+it's clear that acetic acid is volatile and that citric acid does not likely 
+appear in large concentrations in grapes, which are not citrus fruits. The [wikipedia](https://en.wikipedia.org/wiki/Tartaric_acid)
+article on tartaric acid mentions that it exists in high concentrations within
+grapes which is why the concentration is also high in wine.
+
+These acids likely follow similar distributions because of natural laws which 
+decide which accounts for the randomness. As to why it would be log-distributed 
+instead of normally distributed... it would normally happen because after a 
+grape reaches a certain threshold of concentration of a certain acid then it 
+tends to skyrocket.
+
+This could be the result of human breeding/genetically-altering grapes which 
+have really high concentrations of certain compounds within them to gain certain 
+novel tastes?
+
+### Plot 1.6 - Alcohol Content
+
+```{r Alcohol Content Uni-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x=alcohol), data=df) +
+  geom_histogram(fill='#FD7373', alpha=0.7, bins=70) +
+  ggtitle("Histogram of Alcohol Content") +
+  xlab("Alcohol Content (%)")
+  ylab("Count")
+```
+
+Of the features that I wanted to analyze, alcohol content is the only feature
+that does not follow a usual type of distribution. Alcohol content seems to
+range between 8% and 14.5%, whether or not this kind of difference is 
+significant likely depends on each individual person's alcohol tolerance.
+
+If this metric does not create any easily digestable graphs in the next two
+sections, then I can break the continuous nature of this quantitative data and
+convert it to categorical data (low, medium, high) using the natural breaks in
+the bins as seen above.
+
+I am not entirely sure as to what these breaks are, it is likely that they
+represent some sort of rounding taking place. I am inferring this from the
+observation that these breaks come at regular intervals and have a constant
+width (i.e. One bin long). The producers of these wines might be rounding 
+the numbers because humans have an easier time mentally digesting round numbers.
+
+### Plot 1.7 - Salt Chloride Concentration
+
+```{r Salt Chloride Concentration Uni-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x=salt.chlorides), data=df) +
+  geom_histogram(fill='#FD7373', alpha=0.7, bins=70) +
+  ggtitle("Histogram of Salt Chloride concentration") +
+  scale_x_log10() +
+  xlab("Salt Chloride Concentration (g/L)")
+  ylab("Count")
+```
+
+Just like with other cocentrations, salt chloride also follows a log-
+distribution.
+
+It's interesting that a lot of the chemicals dissolved in wine follow this 
+distribution. What would be interesting would be to investigate the quality of
+wines that have high concentrations of one or more chemical compound. Is this
+novelty good or bad? What about is wine has multiple substances in high 
+concentrations?
+
+These questions are a little beyond the scope of this investigation because you
+would need to define what an outlier would be and then you would need to write
+some code to automatically identify these if you don't want to do it by hand, 
+but  it would be worth investigating.
+
+### Plot 1.8 - Density
+
+```{r Density Uni-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x=density), data=df) +
+  geom_histogram(fill='#FD7373', alpha=0.7, bins=70) +
+  ggtitle("Histogram of Wine Density") +
+  xlab("Density (g/L)") +
+  ylab("Count")
+```
+
+The values for density look rather spread in the graph above, but this is
+misleading as the x-ticks would reveal. One tick on this graph contains a 
+density range of 0.02, which is not very much at all. Hence, there is not very
+much variation in white wines when it comes to density. This can be backed up
+using a standard deviation measurement of the data
+
+```{r Density Stats, echo=FALSE, message=FALSE, warning=FALSE}
+sd(df$density)
+```
+
+The Standard deviation is calculated to be 0.030 g/L which is a difference that
+is not easily discernible by human senses. Hence, density will not be 
+investigated further in this analysis.
+
+### Plot 1.9 - Total Sulfur Dioxide
+```{r Total Sulfur Dioxide Uni-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x=total.sulfur.dioxide), data=df) +
+  geom_histogram(fill='#FD7373', alpha=0.7, bins=70) +
+  ggtitle("Histogram of Total Sulfur Dioxide") +
+  xlab("Concentration of Total Sulfur Dioxide (g/L)") +
+  ylab("Count")
+```
+
+We can see that total sulfur dioxide has a rough concentration of 0.138 with a
+standard deviation of roughly 0.04 g/L, which is actually relatively narrow, 
+once again, compared to one might visually gather from the histogram itself.
+
+The concentration of total sulfur dioxide tends to be around the same sort of
+order of magnitude as citric and acetic acid in solution.
+
+
+```{r}
+mean(df$total.sulfur.dioxide)
+sd(df$total.sulfur.dioxide)
+```
+
+
+
+### Plot 1.10 - Free Sulfur Dioxide
+```{r}
+ggplot(aes(x=free.sulfur.dioxide), data=df) +
+  geom_histogram(fill='#FD7373', alpha=0.7, bins=70) +
+  ggtitle("Histogram of Free Sulfur Dioxide") +
+  xlab("Concentration of Free Sulfur Dioxide (g/L)") +
+  ylab("Count")
+```
+
+Here, we can see that the concentration of free sulfur dioxide is normally about
+one half the concentration of the total concentration of sulfur dioxide. This 
+could be due to equilibrium, there free sulfur dioxide is disfavored or because 
+of the reaction between free sulfur dioxide and oxygen to prevent the formation 
+of  vinegar. This difference can be calculated by taking the dividend of the two
+means.
+
+```{r Free Sulfur Dioxide Stats}
+mean(df$free.sulfur.dioxide)/mean(df$total.sulfur.dioxide)
+```
+
+Variation in concentration would also be explained by the total age of the wine
+which is another metric that I don't have access to.
+
+### Plot 1.11 - Sulphates
+```{r}
+ggplot(aes(x=sulphates), data=df) +
+  geom_histogram(fill='#FD7373', alpha=0.7, bins=40) +
+  ggtitle("Histogram of Sulfates") +
+  xlab("Concentration of Sulfates (g/L)") +
+  ylab("Count")
+```
+
+Sulfates are added as a salt additive to help increase the concentration of free 
+sulfur dioxide in solution. Depending on what kind of salt this is, it might play
+a role in the salt.chloride concentration of the wine. Sulfates seem to exist in
+higher concentration of total sulfur dioxide so it is likely not very active in
+solution. (i.e. It doesnt dissolve particularly well, otherwise one might not
+need add so much per liter)
+
+As with many of the other metrics that have been investigated, this distribution
+also has a right skew.
+
+### Plot 1.12 - Quality
+
+```{r Quality Uni-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x=quality), data=df) + 
+  geom_bar(fill='#FD7373', alpha=0.7) +
+  scale_x_continuous(breaks=seq(0, 10, 1)) +
+  ggtitle("Historam of Quality") +
+  xlab("Quality of Wine") +
+  ylab("Count")
+```
+
+```{r Quality Statistics, echo=FALSE, message=FALSE, warning=FALSE}
+nrow(subset(x=df, quality<5))
+nrow(subset(x=df, quality>=5))
+```
+
+Above we can see that Quality is roughly binomially distributed with most wines 
+being rated as average (5 or 6) and with few wines being exceptionally expediant 
+or poor in quality.
+
+The range of the qualities lies between 3 and 9, perhaps this rating scale is 
+too wide since it is difficult to find wines with a rating of 1, 2, and 10.
+
+It is noteworthy that most wines are rated with a 6, slightly above average and 
+wines are about twice as likely to be given a grade above 6 as seen below. 
+Either most of the wine procured was of higher than average quality, the wine 
+given during the test was not truely random in terms of quality, or even 
+connoseurs have a hard time distinguishing between different wines.
+
+It should be observed that since the quality of a the wine has been measured as 
+a median, which means that true outliers of 1 or 10 would be exceptionally rare 
+since all three of the ratings would have to match, which is unlikely.
+
+For future plots, it would probably be a good idea to split the quality of the 
+wine from low, medium and high quality. This will likely help to make trends in
+the bi-variate and multi-variate analyses more clear.
+
+### Quick adjustments and wrangling
+
+It was found during the investigation that Quality is displayed at too high a
+resolution to be useful and as such the wine quality will be changed from a 
+scale between 1 and 10 to values describing "low", "average" and "high" 
+quality;
+* "low":  1-4
+* "average": 5-6
+* "high": 6-10
+
+```{r Quality Wrangling, echo=FALSE, message=FALSE, warning=FALSE}
+# Encode values
+df$quality <- ifelse(df$quality <= 4, 'average', ifelse(
+  df$quality >= 7, 'low', 'high'))
+
+
+df$quality <- factor(df$quality, labels=c("low", "average", "high")) 
+
+```
+
+
+### Plot 1.13 - Quality Histogram 2
+
+```{r Quality Uni-Var Plot2, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x=quality), data=df) + 
+  geom_bar(fill='#FD7373', alpha=0.7) +
+  ggtitle("Bar chart of Quality") +
+  xlab("Quality of Wine") +
+  ylab("Count")
+```
+
+Allocating the scores of wines into the bins outlined above creates this bar
+chart. Immediately we can see that there is a large bias to rate wine as either
+high quality or average. Very few wines recieve a score of less than 4. (n=183,
+from chunk 20)
+
+It might be the case that it will be difficult to find trends for low quality
+wine because the sample size is not as large as one might want. Normally a 
+decent sample size is between 500 and 1000 examples, although this might vary
+depending on what you are measuring. This needs to be considered when carrying
+out this analysis.
+
+In any case, I think this makes a strong case for why ranking wine with the 
+median score of 1-10 of 3 people is not the best way to measure quality.
+
+
+## Univariate Analysis
+
+In this section, I found that most of the chemical concentrations within Wine 
+have a log-distribution, where most wines certain a certain amount of a chemical 
+with a few examples that become outliers becuase of how much higher the 
+concentration of that chemical is. This is less true for sugar and alcohol 
+content, which can vary substantially depending on the initial concentration of
+sugar and the fermentation time. It would be interesting to investigate this
+relationship further in the bi-variate plots section coming up next.
+
+I was impressed to find that there is regular rounding that takes place when
+reporting the concentration of the wine, this is likely because it is possible
+to measure the concentration of wine to a higher degree of acuracy than a human
+would normally care to measure when drinking it.
+
+I also found that the scale of 1-10 was too high a resolution for a qualitative
+evaluation. The resolution was too high because the very far extremes for wine
+quality (1 and 10) were not used at all, most wines tended to be slightly above
+average (6) as the result of human bias. To account for this, I will change the
+scale from a 1-10 metric to a qualitative metric. This should help to show the
+trends in the data much better, although it is likely that the sample size for
+low quality wine is probably too small.
+
+It was found that pH and acid concentrations tended to have similar 
+distributions. However, this did not translate into a strong correlation between
+any of the two features as it stands. This is something I would like to 
+investigate further.
+
+Wine has a much higher concentration of tartaric acid than citric
+and acetic acid, which results in wine's sour taste. This can be explained by
+acetic acid's low boiling point, citric acid likely simply exists in lower 
+concentrations in grapes, which do not taste like citric fruits. Graphes are
+also known to have high concentrations of tartaric acid.
+
+---
+
+## Bivariate Plots
+
+### Plot 2.1 - Alcohol vs Quality
+
+```{r Alcohol vs Quality Bi-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(y=alcohol, x=quality), data=df) +
+  geom_violin(aes(fill=quality), alpha=0.7) +
+  ggtitle("Quality vs Alcohol Content") +
+  xlab("Quality") +
+  ylab("Alcohol (%)")
+  
+```
+
+From the above plot we can see that high alcohol content markedly improves the
+quality of the wine. This is likely due to the longer fementation time for high
+quality wine which has a very noticable bulge towards the higher end of the
+distribution of the violin plot.
+
+It is a shame that fermentation time is not included among the features, this
+would be an interesting dimention to analyse alongside this graph.
+
+To back up this finding, I should compare this plot with a plot of residual 
+sugar to see if there is a relationship.
+
+### Plot 2.2 Residual Sugar vs Alcohol Content
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(y=residual.sugar, x=alcohol), data=df) +
+  geom_point(alpha=0.1) +
+  geom_smooth(method='lm', formula=y~x) +
+  ggtitle("Residual Sugar vs Alcohol Content") +
+  xlab("Alcohol Content (%)") +
+  ylab("Residual Sugar (g/L)") +
+  ylim(0, 25)
+```
+
+Here we can at least confirm my hypothesis that alcohol content leads to lower
+residual sugar concentration. Although it should be noted that low alcohol
+content does not necessarily mean high concentrations of residual sugar, since
+we do not know the initial sugar concentration.
+
+If we knew the rate of alcohol fermentation (which would depend on fermentation
+time and temperature) then this would be something that we could calculate.
+
+
+### Plot 2.3 - Residual Sugar vs Quality
+
+```{r Residual Sugar vs Quality Bi-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(y=residual.sugar, x=quality), data=df) +
+  geom_jitter(aes(fill=quality), alpha=0.1) +
+  geom_boxplot(aes(fill=quality), alpha=0.3) +
+  stat_summary(fun.y = "mean", geom="point", color="red", shape=8, size=4) +
+  ggtitle("Residual Sugar vs Quality") +
+  xlab("Quality") +
+  ylab("Residual Sugar (g/L)")
+```
+
+From the above boxplot we can see that there is a strong "baseline" for residual
+sugar. This can be seen with the large overlap of points when approaching 0 g/L
+residual sugar. This is likely because the fermentation time for these examples
+was long enough to ensure that very little residual sugar remained within 
+solution. We can see that high residual sugar produces markedly average wine but
+high quality wine also has its fair share of sugar as well. although this 
+average is not quite as high.
+
+This is somewhat consistent with my previous plot in regards to alcohol content
+if high quality wine has a higher concentration of alcohol then it must stand to
+reason that assuming the initial sugar concentration does not vary much that 
+there will be less residual sugar within high quality wine as a result. Although
+it should probably be noted that initial sugar concentration (as well as 
+fermentation time and temperature) can vary and this assumption likely does not
+hold entirely fast and true producing the graph above.
+
+In the multivariate section of this analysis we will take the plot from 2.2 and
+color the points to highlight them according to quality this should place all
+of the information in one graph and should tell the story between alcohol
+content, residual sugar and quality much better.
+
+### Plot 2.4 - Citric Acid Concentration vs Quality
+
+```{r Citric Acid vs Quality Bi-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(y=citric.acid, x=quality), data=df) +
+  geom_jitter(aes(fill=quality), alpha=0.1) +
+  geom_boxplot(aes(fill=quality), alpha=0.3) +
+  stat_summary(fun.y = "mean", geom="point", color="red", shape=8, size=4) +
+  ggtitle("Citric Acid Concentration vs Quality") +
+  xlab("Quality") +
+  ylab("Citric Acid Concentration (g/L)")
+```
+
+The plot above shows that the citric acid concentration
+converges onto an ideal value. The quality of wine increases as the wine reaches
+this value. It should be noted that even low quality wine that has this
+concentration of citric acid can still be ruined by other means.
+
+## Plot 2.5 - Acetic Acid Concentration vs Quality
+
+```{r Acetic Acid vs Quality Bi-Var Plot,echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(y=acetic.acid, x=quality), data=df) +
+  geom_jitter(aes(fill=quality), alpha=0.1) +
+  geom_boxplot(aes(fill=quality), alpha=0.3) +
+  stat_summary(fun.y = "mean", geom="point", color="red", shape=8, size=4) +
+  ggtitle("Acetic Acid Concentration vs Quality") +
+  xlab("Quality") +
+  ylab("Acetic Acid Concentration (g/L)")
+```
+
+This finding is more in-line with expectations, namely that high levels of 
+vinegar (acetic acid) causes the quality of the wine to decrease. This is to be
+expected because great lengths are taken to make sure that alcohol does not 
+oxidise to vinegar by making sure the wine remains under conditions which are
+not oxidising as well as additives which prevent this from taking place.
+
+There does not seem to be much difference between average and high quality wine
+in terms of distribution, which says to me that after basic precautions are
+taken to prevent wine oxidation that some amount will occur and that the quality
+of wine will be determined by other factors.
+
+### Plot 2.6 - Tartaric Acid Concentration vs Quality
+
+```{r Tartaric Acid vs Quality Bi-Var Plot,echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(y=tartaric.acid, x=quality), data=df) +
+  geom_jitter(aes(fill=quality), alpha=0.1) +
+  geom_boxplot(aes(fill=quality), alpha=0.3) +
+  stat_summary(fun.y = "mean", geom="point", color="red", shape=8, size=4) +
+  ggtitle("Tartaric Acid Concentration vs Quality") +
+  xlab("Quality") +
+  ylab("Tartaric Acid Concentration (g/L)")
+```
+
+Here we can see that tartaric acid decreases the quality of wine, i.e. high 
+quality wine tends to have lower concentrations of tartaric acid. I think this
+finding is relatively interesting because tartaric acid exists in relatively 
+concentrations within grapes, the major ingredient of wine.
+
+I think that this is likely because tartaric acid exists in such high 
+concentrations that it likely obscures the more interesting tastes within wine
+by overpowering the taster with the sour taste that it has. 
+
+### Plot 2.7 - Salt Chloride Concentration vs Quality
+```{r Salt Chloride vs Quality Bi-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(y=salt.chlorides, x=quality), data=df) +
+  geom_jitter(aes(fill=quality), alpha=0.05) +
+  geom_boxplot(aes(fill=quality), alpha=0.3) +
+  stat_summary(fun.y = "mean", geom="point", color="red", shape=8, size=4) +
+  ggtitle("Salt Chloride Concentration vs Quality") +
+  xlab("Quality") +
+  ylab("Salt Chloride Concentration (g/L)")
+```
+
+Here we can see a slight decrease in the concentration of salt chloride with 
+quality. This is because both the means and the medians decrease in salt 
+chloride concentration. This difference is relatively small since wines tend to
+have a consistent level of salt within them but the trend if noticible for sure.
+
+### Plot 2.8 - Sulphates Concentration vs Quality
+```{r Sulphates vs Quality Bi-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(y=sulphates, x=quality), data=df) +
+  geom_jitter(aes(fill=quality), alpha=0.1) +
+  geom_boxplot(aes(fill=quality), alpha=0.3) +
+  stat_summary(fun.y = "mean", geom="point", color="red", shape=8, size=4) +
+  ggtitle("Concentration of Sulphates vs Quality") +
+  xlab("Quality") +
+  ylab("Concentration of Sulphates (g/L)")
+```
+
+There is also a similarly consistent increase of quality with sulphate 
+concentration. This is to be expected because sulphates prevent the formation
+of acetic acid which would inhibit the quality of the wine. So it is good that
+this is used as an additive.
+
+### Plot 2.9 - Free & Total Sulfur Dioxide Concentration vs Quality
+```{r Free and Total Sulfur Dioxide vs Quality Bi-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+p1 <- ggplot(aes(y=free.sulfur.dioxide, x=quality), data=df) +
+  geom_jitter(aes(fill=quality), alpha=0.05) +
+  geom_boxplot(aes(fill=quality), alpha=0.3) +
+  stat_summary(fun.y = "mean", geom="point", color="red", shape=8, size=4) +
+  ggtitle("Free Sulfur Dioxide Concentration vs Quality") +
+  xlab("Quality") +
+  ylab("Free Sulfur Dioxide Concentration (g/L)")
+
+p2 <- ggplot(aes(y=total.sulfur.dioxide, x=quality), data=df) +
+  geom_jitter(aes(fill=quality), alpha=0.05) +
+  geom_boxplot(aes(fill=quality), alpha=0.3) +
+  stat_summary(fun.y = "mean", geom="point", color="red", shape=8, size=4) +
+  ggtitle("Total Sulfur Dioxide Concentration vs Quality") +
+  xlab("Quality") +
+  ylab("Total Sulfur Dioxide Concentration (g/L)")
+
+grid.arrange(p1, p2, ncol=2)
+
+rm(p1, p2)
+```
+
+Finally, we can see that free sulfur dixide concentration tends to increase the
+quality of the wine. It is worth noting that sulfur dioxide is the "eggy" smell
+of flatulence so it makes sense that you would not want this chemical to exist
+in high concentrations within wine. This would almost certainly hold back a good
+wine from being a great wine.
+
+Although having low sulfur dioxide concentrations would mean that the wine is 
+at higher risk of oxidation causing the formation of acetic acid, so a balance
+should really be struck here.
+
+
+### Plot 2.10 - pH vs Acid Concentration
+
+```{r pH Acetic Acid Bi-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+# calculate total acid concentration
+df$acid.conc <- df$tartaric.acid + df$acetic.acid + df$citric.acid
+
+ggplot(aes(y= pH, x=acid.conc), data=df) +
+  geom_point(alpha=0.25) +
+  ggtitle("pH vs Acid Concentration") +
+  xlab("Acid Concentration (g/L)")
+```
+
+Above, we can see the change in pH with acid concentration calculated as a sum
+of tartaric, acetic and citric acids. We can see that although there is a 
+general correlation between total acid concentration and pH, that relationship 
+is not very strong for various reasons.
+
+Firstly, tartaric, citric and acetic acid all have different pKa values. This is
+basically the way chemists measure the acidic strength of certain molecules and
+is central to understanding organic chemistry. 
+
+The relationship between pH and pKa can be related with this equation:
+
+$$pH = pK_a + log(\frac{[A-]}{[HA]})$$
+
+As we can see, since we did not do a log transformation nor did we take pKa 
+values into account, there is no way we will create any sort of resolved line in
+this chart. Though we can still see the general trend that pH decreases with 
+acid concentration. 
+
+If we were to take all of these details into account, we might be able to find a
+difference between the predicted pH and the real pH and see if there are any
+trace acids that were not considered in this analysis. Although, we would likely
+need to report pH to a higher precision as the acids that lead to the 
+discrepancy are probably trace compounds that do not contribute very much to a 
+difference in taste unless it is very noticable in small concentrations, which 
+is possible but unlikely.
+
+
+## Bivariate Analysis
+
+In this section of the analysis we found that alcohol content tends to increase
+the quality of the wine. High alcohol content tends to coincide with longer
+fermentation times and hence lower concentrations of residual sugar. 
+
+It would see that the various concentrations of acids within wine contribute
+differently towards the quality as well. Citric acid seems to have an ideal
+value which is best converged upon, to make the wine taste fresh but not too 
+fresh. Acetic acid (i.e. vinegar) is negatively correlated with quality and is a
+chemical that is best avoided. Tartaric acid's sour taste also exists in high
+concentrations and can obscure the tastes created by other chemical compounds
+and so high concentrations of this acid is negatively correlated with quality.
+
+It also seems that salt negatively impacts the quality of wine, I am not sure as
+to why this is because salt stimulates the taste glands and so is usually good
+when it comes to making things taste better. Hence, saltiness must disturb the 
+ideal taste of white wine in some way. Increasing concentration of sulphates
+tends to help wine quality as it prevents acetic acid formation but high 
+concentrations of free sulfur dioxide are not preferable either because it does
+not necesarily taste very nice. (The gaseous verion smell quite bad actually.)
+
+---
+
+## Multivariate Plots
+
+### Plot 3.1 - Residual Sugar vs Alcohol Content, Colored by Quality
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data=df, aes(x=alcohol, y=residual.sugar)) + 
+  geom_point(aes(colour=quality), alpha=0.35) +
+  geom_smooth(method="lm", aes(color=quality)) +
+  ggtitle("Residual Sugar vs Alcohol Content") +
+  ylab("Residual Sugar (g/L)") +
+  xlab("Alcohol Concentration (%)") +
+  ylim(0,25)
+```
+
+The decrease in alcohol concentration with residual sugar is very clear to see
+across wine qualities. We can see that high quality wine tends to cluster 
+towards higher alcohol concentration, which is consistent with findings shown
+earlier.
+
+One interesting finding is that the residual sugar of average and high quality
+wine is higher than low quality wine. This suggests that having a good remainder
+of sugar after fementation will increase the quality of the wine even when 
+taking the error of these linear regression models into account. (Notice the 
+broad grey line surrounding the low quality regression.)
+
+### Plot 3.2 - Concentration of Sulfur Dioxide Concentrations vs Salt 
+Cocentration
+
+```{r Concentration of Sulfur Dioxide Concentrations vs Salt Cocentration, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Calculate bound sulfure dioxide
+df$bound.sulfur.dioxide <- df$total.sulfur.dioxide - df$free.sulfur.dioxide
+
+# Create melted df
+melt_vector <- c("free.sulfur.dioxide",
+                                      "bound.sulfur.dioxide",
+                                      "salt.chlorides")
+
+df_melt <- subset(df, select=melt_vector)
+df_melt <- gather(df_melt, variable, value, -salt.chlorides)
+
+# Plot data
+ggplot(data=df_melt) +
+  geom_point(aes(y=value, x=salt.chlorides, color=variable), alpha=0.25) +
+  scale_x_log10() +
+  ggtitle("Concentration of Sulfur Dioxide Concentrations vs Salt Concentration") +
+  xlab("Salt Chloride Concentration (g/L)") +
+  ylab("Sulfur Dioxide Concentration (g/L)")
+
+
+# Free-up memory
+rm(df_melt, melt_vector)
+```
+
+This plot disproves the hypothesis I had in section 2.5. My hypothesis was that
+increasing salt concentration would lead to a decrease in free sulfur 
+concentration and increase the concentration of bound sulfur dioxide, which I 
+calculated as being the concentration left over when substracting the total 
+sulfur dioxide concentration from the free sulfur concentration.
+
+Here, we can see that salt concentration tends to follow a log-distribution 
+where most concentrations are crowded around one value with a couple of notable 
+outliers. In general, it seems that more sulfur dioxide is bound rather than 
+free in solution, which aligns with the description given in the text file 
+accompanying this dataset.
+
+Plot 3.3 - Acid Constributions
+
+```{r pH Acid Contributions Multi-Var Plot, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Create melted df
+melt_vector <- c("tartaric.acid", "acetic.acid", "citric.acid", "acid.conc", "pH")
+
+# Create melted df
+df_melt <- subset(df, select=melt_vector)
+df_melt <- gather(df_melt, variable, concentration, -c("acid.conc", "pH"))
+
+# Plot Data
+ggplot(aes(y= pH, x=acid.conc), data=df_melt) +
+  geom_point(aes(color=concentration)) +
+  facet_grid(~variable) +
+  ggtitle("pH vs Acid Concentration") +
+  xlab("Total Acid Concentration (g/L)")
+
+# Clean up memory
+rm(df_melt, melt_vector)
+```
+
+Above, we can see a graph showing the same graph as pH vs Total Acid 
+Concentration as seen in plot 2.6, except this time the points have been colored
+according to the concentration of each acid within that total value. We can see
+that tartaric acid contributes the most in terms of mass over volume (g/L) and 
+with acetic and citric acid contributing much less.
+
+To use the Henderson-Hasselbach equation shown above we would need to know the
+concentration of $[A^-]$ (the unbound acid) in solution, right now we only know
+the bound concentration. 
+
+However, drawbacks with this diagram are that it does not control for molecular
+mass and it does not account for the actual strength of the acids. This means 
+that a molecule could be heavier and thus contrubute more to the concentration 
+per molecule, if a molecule also was able to dissociate more strongly from its 
+protons then we would not be able to see it from a graph like this.
+
+
+## Multivariate Analysis
+
+In this final stage of the analysis, it was discovered that some hypotheses that
+I drew earlier in this analysis turned out to likely be false. 
+
+I hypothesised that salt likely played a role within the bound and unbound 
+concentration of bound and unbound sulfur dioxide in solution, but it turns out
+that this concentration is independent of salt concentration.
+
+More evidence was found that suggests that high alcohol content is favorable for
+the quality of wine. There also seems to be an added bonus if there is also a 
+high concentration of residual sugar after the fementation has finished.
+
+Finally, another way was found to communicate the concentration of tartaric acid
+within wine, I find this to be interesting becuase before this analysis I did 
+not have any notion about what acids are present within wine, this plot gives a
+feel for that using color to express concentration.
+
+---
+
+## Final Plots
+
+### Plot 4.1 - Histogram of acid concentrations
+
+```{r Histogram of acid concentrations, echo=FALSE, message=FALSE, warning=FALSE}
+# Create melted df
+melt_vector <- c("tartaric.acid", "acetic.acid", "citric.acid")
+
+df_melt <- subset(df, select=melt_vector)
+df_melt <- gather(df_melt, variable, value)
+
+ggplot(aes(x=value), data=df_melt) +
+  geom_histogram(aes(fill=variable, color=I("grey")), alpha=0.95, bins=50) +
+  ggtitle("Histogram of acid concentrations") +
+  ylab("Count") +
+  xlab("Total Acid Concentration (g/L)")
+
+rm(df_melt, melt_vector)
+```
+
+With this plot I wanted to quickly summarise the acid concentrations because
+I spent a lot of time investigating this. Although I do like plot 3.3 from an
+aesthetic perspective, using a color graident is not always the best way to 
+compare differences in an precise way. The human eye is better at understanding 
+vertical and horizontal lengths and so I have chosen to use that instead.
+
+Grouping the acid concentrations of acetic and citric acid together creates a 
+connection in the readers mind that makes it separate from tartaric acid. The 
+reader will be able to intuitively understand that the values of citric and 
+tartaric acid are rather consistent whereas tartaric acid has higher variation 
+and concentration.
+
+By melting the data in this way, I was able to condense multiple histograms into
+a single graph. Where it is clear to see what kind of concentrations of the 
+various acids are within wine.
+
+### Plot 4.2
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+corr_coeff = cor(x=df$residual.sugar, y=df$alcohol)
+
+ggplot(aes(y=residual.sugar, x=alcohol), data=df) +
+  geom_point(color=I("grey40"), alpha=0.25) +
+  geom_smooth(method='lm', formula=y~x, aes(colour="Linear Model")) +
+  ggtitle("Residual Sugar vs Alcohol Content") +
+  xlab("Alcohol Content (%)") +
+  ylab("Residual Sugar (g/L)") +
+  scale_colour_manual(name="Legend", values=c("blue")) +
+  ylim(0, 32) +
+  annotate("text", x=14, y=9.5, label="R² = -0.451", colour="royalblue1")
+
+rm(corr_coeff)
+```
+
+I also really liked plot 2.2 which tells a story about how residual sugar 
+content decreases with alcohol content.
+
+I changed the graph so that instead of using a really low alpha level for the 
+points, I changed the color to grey so that they go into the background and used 
+a blue line to catch the attention of the viewer and draw their attention to the 
+clear decrease in trend.
+
+I added a legend to make it clear that a linear regression was used and I added
+some statistics such as the $R²$ value in order to express that this is not an
+indredibly strong correlation but is worth noting nonetheless.
+
+The readers attention is usually drawn from left to right, and so the first 
+thing that a reader will notice is the line and will follow it. Their eye will 
+likely be drawn next to the legend and will cross the correlation coefficient on
+the way there. After this information is understood they will be able to see the 
+original data points which lead to this model. The axes are clearly labeled so 
+that it is clear what these data points are.
+
+### Plot 4.3
+
+```{r Refined pH Plot, echo=FALSE, message=FALSE, warning=FALSE}
+# Create Values
+bins <- 10
+cols <- c("#F5ED1C","#86C246")
+colGradient <- colorRampPalette(cols)
+cut.cols <- colGradient(bins)
+cuts <- cut(df$pH,bins)
+names(cuts) <- sapply(cuts,function(t) cut.cols[which(as.character(t) == levels(cuts))])
+
+# Univariate plott of residual sugar
+ggplot(aes(x=pH, fill=cut(pH, bins)), data=df) +
+  geom_histogram(alpha=0.7, bins=bins, show.legend=FALSE) +
+  scale_color_manual(values=cut.cols,labels=levels(cuts))+
+  scale_fill_manual(values=cut.cols,labels=levels(cuts)) +
+  xlim(0, 14) +
+  geom_vline(xintercept=2, color="#F7C611") +
+  geom_vline(xintercept=6.5, color="green") +
+  geom_vline(xintercept=1, color="red") +
+  geom_vline(xintercept=5, color="#4DB749") +
+  scale_x_continuous(breaks=seq(0,14,1)) +
+  annotate("text", 
+           x=c(1, 2, 5, 6.5),
+           y=3000,label=c("Battery Acid", "Vinegar", "Banana","Water"),
+           hjust=0,
+           color="grey35") +
+  ggtitle("pH of Wine") +
+  xlab("pH") +
+  ylab("Count")
+
+rm (bins, cols, colGradient, cut.cols, cuts)
+```
+
+I also really liked this histogram which shows how the pH of wine ranks compared
+to other chemicals and objects. 
+
+This graph does not calture that this scale is a logarhithmic one, which means
+that pH 1 is 10$\times$ as concentrated as pH2 is 0$\times$ as concentrated as 
+pH3, etc. 
+
+Using a color gradient is normall when viewing a pH scale because it gives a
+qualitative measurement to see how this difference changes.
+
+---
+
+## Reflection
+
+### What insights were found?
+The major insights found in this investigation are as follows:
+
+  * Good for Quality:
+    * Higher Alcohol Concentration is good for quality
+    * Bonus points for having high concentration of residual sugar
+    * Having high concentrations of sulfates to prevent the formation of acetic
+    acid is also beneficial
+  * Bad for Quality:
+    * High concentrations of tartaric acid obscures the finer tastes of wine
+    * High concentratoins of acetic acid also makes wine too sour and so should
+    be avoided
+    * High concentrations of salt also is not very good for the quality of wine
+    * High concentrations of free sulfur dioxide is also not very good for the
+    taste of wine because sulfur dioxide is smelly.
+  * Balance Required:
+    * Citric acid should exist but not in overly high concentrations
+
+Other miscilaneous obersvations that I made were that rounding-up takes place 
+when it comes to labeling wine concentrations to attain round numbers. 
+
+The method of rating the wine meant that wines were overrated on average, this 
+is  likely because a median on a scale of 1-10 is too high resolution for now 
+accurate peoples evaluation of taste is. This would likely mean that a lower 
+resolution of quality would lead to more consistent measurements. 
+
+It should also be noted that residual sugar is negatively correlated with 
+alcohol concentration because the fermentation process that creates alcohol
+requires sugar.
+
+I had a hypothesis that salt concentration might play a role in the equilibrium
+between free and fixed sulfur dioxide in solution, with higher concentrations of
+salt inhibiting the formation of free sulfur dioxide. However it was found that
+these two metrics are independent of each other.
+
+### Difficulties and Solutions
+
+When I first started this analysis I used Ggally to create a scatter matrix of
+the features within the dataset. However, looking at the data in this way did 
+not highlight clear correlations to investigate as I had hoped. Instead, it 
+really obscured all of the patterns in the data and it discouraged me quite a 
+bit.
+
+I tried to counter this problem by plotting the features one-by-one. This helped
+a lot to help bring out the patterns in the data, I am continually impressed by
+how much changing the visualisation method and the ways to draw emphasis to 
+different elments in a graph contributes toward how it is percieved!
+
+Finally, I found half way through my analysis that I had made a mistake when it
+came to the ordering of wines when it changed the variables. This meant that I
+had to correct this problem and then rewrite most of my analysis that I had done
+which took up a lot of time. Next time I should try and do some more checks to
+make sure that the transformations that I perform are correct.
+
+### Ideas for Further Analysis
+
+Although it would be interesting to train a deep learning model to this dataset
+and then use a random number generator to make plausible wines and perhaps use a
+kind of evolutionary algorithm to create wines that the deel learning network 
+predicts to be of very high quality and strive to create this wine based on 
+similar ones as a template. That might be interesting.
+
+### Improvements for the analysis
+
+* Better features: fermentation time
+* Better outcome recording: Controll for drunkness of assessers
+* Removal of bias: Dont take median of quality
