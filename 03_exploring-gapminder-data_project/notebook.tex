@@ -1,0 +1,1546 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[11pt]{article}
+
+    
+    
+    \usepackage[T1]{fontenc}
+    % Nicer default font (+ math font) than Computer Modern for most use cases
+    \usepackage{mathpazo}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % We will generate all images so they have a width \maxwidth. This means
+    % that they will get their normal width if they fit onto the page, but
+    % are scaled down if they would overflow the margins.
+    \makeatletter
+    \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+    \else\Gin@nat@width\fi}
+    \makeatother
+    \let\Oldincludegraphics\includegraphics
+    % Set max figure width to be 80% of text width, for now hardcoded.
+    \renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=.8\maxwidth]{#1}}
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionLabelFormat{nolabel}{}
+    \captionsetup{labelformat=nolabel}
+
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    
+
+    
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{investigate-a-dataset}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \section{Project: Investigating Gapminder
+Data}\label{project-investigating-gapminder-data}
+
+\subsection{Table of Contents}\label{table-of-contents}
+
+Introduction
+
+Defining Functions
+
+Data Wrangling
+
+Exploratory Data Analysis
+
+Conclusions
+
+     \#\# Introduction
+
+Over time, countries develop in terms of productivity often measured in
+\href{https://en.wikipedia.org/wiki/Gross_domestic_product}{GDP}. As GDP
+rises, there is often an acompanying change in workforce composition and
+median age. This investigation aims to investigate metrics from four
+datasets from the \href{http://www.gapminder.org/data/}{gapminder}
+website in order to analyze what the general trends are.
+
+In order to help group the dataset by continents/regions and
+sub-regions, a CSV file containing this information was also downloaded.
+The corresponding github page can be found
+\href{https://github.com/lukes/ISO-3166-Countries-with-Regional-Codes}{here}.
+
+The directing questions for this investigation is as follows:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  As a country develops, how does the composition of its workforce
+  change?
+\item
+  Which countries are progressing the fastest?
+\item
+  What can countries expect as their GDP rises?
+\item
+  How does the age of a country change over time?
+\end{enumerate}
+
+Datasets analyzed:
+
+\begin{itemize}
+\item
+  Gross Domestic Product per capita in constant USD (value from the year
+  2000)
+
+  \begin{itemize}
+  \item
+    Adjusted for inflation
+  \item
+    Not adjusted for differences in cost of living between countries
+  \end{itemize}
+\item
+  Agriculture workers (\% total labor force)
+\item
+  Industry workers (\% total labor force)
+\item
+  Service workers (\% total labor force)
+\end{itemize}
+
+The parameters used will be as follows:
+
+\begin{itemize}
+\item
+  Independent variable:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Time
+  \end{itemize}
+\item
+  Dependent variables:
+
+  \begin{itemize}
+  \item
+    GDP
+  \item
+    \% employment in Agriculture, Service and Industrial sectors
+  \end{itemize}
+\end{itemize}
+
+Github respository can be found
+\href{https://github.com/SThornewillvE/Udacity-Project---Exploring-Gapminder-Data}{here}.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{c+c1}{\PYZsh{} Import libraries}
+        
+        \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+        \PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+        \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+        \PY{k+kn}{import} \PY{n+nn}{seaborn} \PY{k}{as} \PY{n+nn}{sns}
+        \PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{stats} \PY{k}{import} \PY{n}{ttest\PYZus{}ind}
+        
+        \PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\end{Verbatim}
+
+
+     \#\# Defining Functions
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{k}{def} \PY{n+nf}{df\PYZus{}T\PYZus{}properly}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{p}{:}
+            \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{    Transposes the dataframe, sets the column titles to the first row in the }
+        \PY{l+s+sd}{    transposed dataframe before removing the first row and returning the pro\PYZhy{}}
+        \PY{l+s+sd}{    perly transposed.}
+        \PY{l+s+sd}{    }
+        \PY{l+s+sd}{    Used in: calculate\PYZus{}nan\PYZus{}density\PYZus{}country(df\PYZus{}list)}
+        \PY{l+s+sd}{    \PYZdq{}\PYZdq{}\PYZdq{}}
+            
+            \PY{c+c1}{\PYZsh{} Transpose dataframe }
+            \PY{n}{df2} \PY{o}{=} \PY{n}{df}\PY{o}{.}\PY{n}{transpose}\PY{p}{(}\PY{p}{)}
+            
+            \PY{c+c1}{\PYZsh{} Rename columns}
+            \PY{n}{df2}\PY{o}{.}\PY{n}{columns} \PY{o}{=} \PY{n}{df2}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+            
+            \PY{c+c1}{\PYZsh{} Reset columns}
+            \PY{n}{df3} \PY{o}{=} \PY{n}{df2}\PY{o}{.}\PY{n}{reindex}\PY{p}{(}\PY{n}{df2}\PY{o}{.}\PY{n}{index}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
+            
+            \PY{k}{return} \PY{n}{df3}    
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{k}{def} \PY{n+nf}{plot\PYZus{}nan\PYZus{}density\PYZus{}year}\PY{p}{(}\PY{n}{df}\PY{p}{,} \PY{n}{df\PYZus{}name}\PY{p}{,} \PY{n}{x\PYZus{}label} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Year}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+            \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{    Calculates the density of non\PYZhy{}NaN values inside of a dataframe for each }
+        \PY{l+s+sd}{    row (i.e. year) and creates a plot with specified title showing this change.}
+        \PY{l+s+sd}{    \PYZdq{}\PYZdq{}\PYZdq{}}
+            
+            \PY{c+c1}{\PYZsh{} Calculate density per row}
+            \PY{n}{year} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+            \PY{n}{density} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+            \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{df}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                \PY{k}{if} \PY{n}{i} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:} \PY{k}{continue}
+                \PY{n}{year}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n+nb}{int}\PY{p}{(}\PY{n}{df}\PY{o}{.}\PY{n}{columns}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+                \PY{n}{density}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{df}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{count}\PY{p}{(}\PY{p}{)}\PY{o}{/}\PY{n+nb}{len}\PY{p}{(}\PY{n}{df}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+            
+            \PY{c+c1}{\PYZsh{} Plot Results}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{year}\PY{p}{,} \PY{n}{density}\PY{p}{)}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{n}{x\PYZus{}label}\PY{p}{)}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Non\PYZhy{}NaN Density}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Non\PYZhy{}NaN values for }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{df\PYZus{}name}\PY{p}{)}\PY{p}{)}
+            \PY{n}{axes} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{gca}\PY{p}{(}\PY{p}{)}
+            \PY{n}{axes}\PY{o}{.}\PY{n}{set\PYZus{}ylim}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{k}{def} \PY{n+nf}{basic\PYZus{}plot}\PY{p}{(}\PY{n}{x\PYZus{}series}\PY{p}{,} \PY{n}{y\PYZus{}series}\PY{p}{,} \PY{n}{x\PYZus{}label} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{x}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{y\PYZus{}label}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+                       \PY{n}{y\PYZus{}ticks}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,} \PY{n}{plt\PYZus{}title} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{plot}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+            \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{    Creates a basic plot from two series, used for creating quick and dirty}
+        \PY{l+s+sd}{    plots.}
+        \PY{l+s+sd}{    }
+        \PY{l+s+sd}{    For changing the xticks, input an integer for reduced\PYZus{}xticks. This only}
+        \PY{l+s+sd}{    works if x\PYZus{}series can be converted to an integer}
+        \PY{l+s+sd}{    }
+        \PY{l+s+sd}{    You can also adjust the yticks by adding a tuple in the form of }
+        \PY{l+s+sd}{    (start, finish)}
+        \PY{l+s+sd}{    \PYZdq{}\PYZdq{}\PYZdq{}}
+            
+            \PY{c+c1}{\PYZsh{} Change years to int}
+            \PY{n}{x\PYZus{}series} \PY{o}{=} \PY{n}{x\PYZus{}series}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{int}\PY{p}{)}
+             
+            \PY{c+c1}{\PYZsh{} Create plot}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x\PYZus{}series}\PY{p}{,} \PY{n}{y\PYZus{}series}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{n}{x\PYZus{}label}\PY{p}{)}
+            \PY{k}{if} \PY{n}{y\PYZus{}ticks}\PY{p}{:} \PY{n}{plt}\PY{o}{.}\PY{n}{yticks}\PY{p}{(}\PY{n}{y\PYZus{}ticks}\PY{p}{)}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{n}{y\PYZus{}label}\PY{p}{)}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{n}{plt\PYZus{}title}\PY{p}{)}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{show}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}5}]:} \PY{k}{def} \PY{n+nf}{calculate\PYZus{}nan\PYZus{}density\PYZus{}country}\PY{p}{(}\PY{n}{df\PYZus{}list}\PY{p}{)}\PY{p}{:}
+            \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{    Looks at a list of dataframes and calculates the NaN density for each }
+        \PY{l+s+sd}{    country and returns that information inside of a datafame.}
+        \PY{l+s+sd}{    }
+        \PY{l+s+sd}{    Section of code will try to find the largest intersection of countries}
+        \PY{l+s+sd}{    shared by all dataframes.}
+        \PY{l+s+sd}{    }
+        \PY{l+s+sd}{    This is so that the data can be grouped\PYZhy{}by filtered and merged with other dfs}
+        \PY{l+s+sd}{    later which will help gain into more insight into which columns that need to}
+        \PY{l+s+sd}{    be dropped or transformed in some way.}
+        \PY{l+s+sd}{    }
+        \PY{l+s+sd}{    Dependencies: }
+        \PY{l+s+sd}{        country\PYZus{}check(check\PYZus{}country, df)}
+        \PY{l+s+sd}{        common\PYZus{}countries(smallest\PYZus{}list)}
+        \PY{l+s+sd}{        df\PYZus{}T\PYZus{}properly(df)}
+        \PY{l+s+sd}{    \PYZdq{}\PYZdq{}\PYZdq{}}
+            
+            \PY{c+c1}{\PYZsh{} Initialize values}
+            \PY{n}{n\PYZus{}countries} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+            \PY{n}{smallest} \PY{o}{=} \PY{l+m+mf}{1e400}
+            
+            \PY{c+c1}{\PYZsh{} Find dataframes with lowest number of nonNaN rows}
+            \PY{k}{for} \PY{n}{df} \PY{o+ow}{in} \PY{n}{df\PYZus{}list}\PY{p}{:}
+                
+                \PY{c+c1}{\PYZsh{} Create relevant entry in dictionary}
+                \PY{k}{if} \PY{o+ow}{not} \PY{n+nb}{eval}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o+ow}{in} \PY{n}{n\PYZus{}countries}\PY{o}{.}\PY{n}{keys}\PY{p}{(}\PY{p}{)}\PY{p}{:} \PY{n}{n\PYZus{}countries}\PY{p}{[}\PY{n+nb}{eval}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{o}{=}\PY{p}{[}\PY{n}{df}\PY{p}{]}
+                \PY{k}{else}\PY{p}{:} \PY{n}{n\PYZus{}countries}\PY{p}{[}\PY{n+nb}{eval}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{df}\PY{p}{)}
+                    
+                \PY{c+c1}{\PYZsh{} Keep track of smallest value}
+                \PY{k}{if} \PY{n+nb}{eval}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{\PYZlt{}} \PY{n}{smallest}\PY{p}{:} 
+                    \PY{n}{smallest} \PY{o}{=} \PY{n+nb}{eval}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+            
+            \PY{c+c1}{\PYZsh{} Check smallest number of countries is unique}
+            \PY{k}{if} \PY{n+nb}{len}\PY{p}{(}\PY{n}{n\PYZus{}countries}\PY{p}{[}\PY{n}{smallest}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZgt{}} \PY{l+m+mi}{1}\PY{p}{:}
+                
+                \PY{c+c1}{\PYZsh{} Rename list}
+                \PY{n}{smallest\PYZus{}list} \PY{o}{=} \PY{n}{n\PYZus{}countries}\PY{p}{[}\PY{n}{smallest}\PY{p}{]}
+                
+                \PY{c+c1}{\PYZsh{} Find unique columns}
+                \PY{n}{check\PYZus{}country} \PY{o}{=} \PY{n}{common\PYZus{}countries}\PY{p}{(}\PY{n}{smallest\PYZus{}list}\PY{p}{)}
+            
+            \PY{k}{else}\PY{p}{:} \PY{n}{check\PYZus{}country} \PY{o}{=}  \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{eval}\PY{p}{(}\PY{n}{n\PYZus{}countries}\PY{p}{[}\PY{n}{smallest}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+            
+            \PY{c+c1}{\PYZsh{} Check that all check\PYZus{}country appear in ccode}
+            \PY{n}{check\PYZus{}country2} \PY{o}{=} \PY{n}{country\PYZus{}check}\PY{p}{(}\PY{n}{check\PYZus{}country}\PY{p}{,} \PY{n}{df\PYZus{}ccode}\PY{p}{)}
+            \PY{n}{check\PYZus{}country3} \PY{o}{=} \PY{n}{country\PYZus{}check}\PY{p}{(}\PY{n}{check\PYZus{}country2}\PY{p}{,} \PY{n}{df\PYZus{}GDP}\PY{p}{)}
+            \PY{n}{check\PYZus{}country4} \PY{o}{=} \PY{n}{country\PYZus{}check}\PY{p}{(}\PY{n}{check\PYZus{}country3}\PY{p}{,} \PY{n}{df\PYZus{}age}\PY{p}{)}
+            
+            \PY{c+c1}{\PYZsh{} Create dictionary which will be converted to dataframe}
+            \PY{n}{dict\PYZus{}to\PYZus{}df} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+            
+            \PY{c+c1}{\PYZsh{} Fill dictionary with relevant values}
+            \PY{k}{for} \PY{n}{country} \PY{o+ow}{in} \PY{n}{check\PYZus{}country4}\PY{p}{:}
+        
+                \PY{c+c1}{\PYZsh{} Init. row list}
+                \PY{n}{row\PYZus{}list} \PY{o}{=} \PY{p}{[}\PY{p}{]} 
+                
+                \PY{k}{for} \PY{n}{df} \PY{o+ow}{in} \PY{n}{df\PYZus{}list}\PY{p}{:}
+                    \PY{c+c1}{\PYZsh{} Calculate length}
+                    
+                    \PY{n}{df\PYZus{}row\PYZus{}length} \PY{o}{=} \PY{n+nb}{eval}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{p}{[}\PY{n+nb}{eval}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{==}\PY{n}{country}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{notnull}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{count}\PY{p}{(}\PY{p}{)}
+                    
+                    \PY{c+c1}{\PYZsh{} Calculate non\PYZhy{}NaN values}
+                    \PY{n}{df\PYZus{}row\PYZus{}nonNaN} \PY{o}{=} \PY{n+nb}{eval}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{p}{[}\PY{n+nb}{eval}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{==}\PY{n}{country}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{notnull}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+                    
+                    \PY{c+c1}{\PYZsh{} Append to List}
+                    \PY{n}{row\PYZus{}list}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{df\PYZus{}row\PYZus{}nonNaN}\PY{o}{/}\PY{n}{df\PYZus{}row\PYZus{}length}\PY{p}{)}
+                
+                \PY{c+c1}{\PYZsh{} Insert values into dictionary}
+                \PY{n}{dict\PYZus{}to\PYZus{}df}\PY{p}{[}\PY{n}{country}\PY{p}{]} \PY{o}{=} \PY{n}{row\PYZus{}list}
+                
+            \PY{c+c1}{\PYZsh{} Convert dictionary to dataframe and transpose}
+            \PY{n}{return\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{dict\PYZus{}to\PYZus{}df}\PY{p}{)}
+            \PY{n}{return\PYZus{}df}\PY{o}{.}\PY{n}{insert}\PY{p}{(}\PY{n}{loc} \PY{o}{=} \PY{l+m+mi}{0}\PY{p}{,} \PY{n}{column} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{value} \PY{o}{=} \PY{n}{df\PYZus{}list}\PY{p}{)}
+            \PY{n}{return\PYZus{}df} \PY{o}{=} \PY{n}{df\PYZus{}T\PYZus{}properly}\PY{p}{(}\PY{n}{return\PYZus{}df}\PY{p}{)}
+            
+            \PY{k}{return} \PY{n}{return\PYZus{}df}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} \PY{k}{def} \PY{n+nf}{common\PYZus{}countries}\PY{p}{(}\PY{n}{smallest\PYZus{}list}\PY{p}{)}\PY{p}{:}
+            \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{    Checks a list of strings that can be evaluated to dataframes and returns }
+        \PY{l+s+sd}{    countries which are not found in all dataframes.}
+        \PY{l+s+sd}{    }
+        \PY{l+s+sd}{    Used in: calculate\PYZus{}nan\PYZus{}density\PYZus{}country(df\PYZus{}list)}
+        \PY{l+s+sd}{    \PYZdq{}\PYZdq{}\PYZdq{}}
+        
+            \PY{c+c1}{\PYZsh{} Init. list}
+            \PY{n}{ignore\PYZus{}country} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+            \PY{n}{check\PYZus{}country}\PY{o}{=} \PY{p}{[}\PY{p}{]}
+        
+            \PY{c+c1}{\PYZsh{} Check columns}
+            \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{smallest\PYZus{}list}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+                
+                \PY{c+c1}{\PYZsh{} Init j value to compare with later dfs}
+                \PY{n}{j} \PY{o}{=} \PY{n}{i}
+                
+                \PY{c+c1}{\PYZsh{} Check larger dfs}
+                \PY{k}{while} \PY{n}{j} \PY{o}{\PYZlt{}} \PY{n+nb}{len}\PY{p}{(}\PY{n}{smallest\PYZus{}list}\PY{p}{)}\PY{p}{:}
+                    
+                    \PY{c+c1}{\PYZsh{} Find unique columns}
+                    \PY{n}{set\PYZus{}diff} \PY{o}{=} \PY{n+nb}{set}\PY{p}{(}\PY{n+nb}{eval}\PY{p}{(}\PY{n}{smallest\PYZus{}list}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{.}\PY{n}{difference}\PY{p}{(}
+                               \PY{n+nb}{set}\PY{p}{(}\PY{n+nb}{eval}\PY{p}{(}\PY{n}{smallest\PYZus{}list}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+                    
+                    \PY{c+c1}{\PYZsh{} Add new unique columns to list}
+                    \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n}{set\PYZus{}diff}\PY{p}{:}
+                        \PY{k}{if} \PY{n}{k} \PY{o+ow}{not} \PY{o+ow}{in} \PY{n}{ignore\PYZus{}country}\PY{p}{:} \PY{n}{ignore\PYZus{}country}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{k}\PY{p}{)}
+                    
+                    \PY{c+c1}{\PYZsh{} Increment j for next loop}
+                    \PY{n}{j}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
+                
+            \PY{c+c1}{\PYZsh{} find check\PYZus{}columns}
+            \PY{k}{for} \PY{n}{df} \PY{o+ow}{in} \PY{n}{smallest\PYZus{}list}\PY{p}{:}
+                \PY{n}{good\PYZus{}columns} \PY{o}{=} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{set}\PY{p}{(}\PY{n+nb}{eval}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{o}{.}\PY{n}{Country}\PY{p}{)}\PY{o}{.}\PY{n}{difference}\PY{p}{(}\PY{n+nb}{set}\PY{p}{(}\PY{n}{ignore\PYZus{}country}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+                \PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n}{good\PYZus{}columns}\PY{p}{:}
+                    \PY{k}{if} \PY{n}{col} \PY{o+ow}{not} \PY{o+ow}{in} \PY{n}{check\PYZus{}country}\PY{p}{:} \PY{n}{check\PYZus{}country}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{col}\PY{p}{)}
+            
+            \PY{k}{return} \PY{n}{check\PYZus{}country}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}7}]:} \PY{k}{def} \PY{n+nf}{country\PYZus{}check}\PY{p}{(}\PY{n}{check\PYZus{}country}\PY{p}{,} \PY{n}{df}\PY{p}{)}\PY{p}{:}
+            \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{    Makes sure that each country can be found in df.}
+        \PY{l+s+sd}{    }
+        \PY{l+s+sd}{    Used in: calculate\PYZus{}nan\PYZus{}density\PYZus{}country(df\PYZus{}list)}
+        \PY{l+s+sd}{    \PYZdq{}\PYZdq{}\PYZdq{}}
+            
+            \PY{c+c1}{\PYZsh{} Init. list}
+            \PY{n}{check\PYZus{}country2} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+            
+            \PY{c+c1}{\PYZsh{} Check columns}
+            \PY{k}{for} \PY{n}{country} \PY{o+ow}{in} \PY{n}{check\PYZus{}country}\PY{p}{:}
+                \PY{k}{try}\PY{p}{:} 
+                    \PY{k}{if} \PY{n}{country} \PY{o+ow}{in} \PY{n+nb}{list}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{name}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{:} \PY{n}{check\PYZus{}country2}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{country}\PY{p}{)}
+                \PY{k}{except} \PY{n+ne}{KeyError}\PY{p}{:} 
+                    \PY{k}{if} \PY{n}{country} \PY{o+ow}{in} \PY{n+nb}{list}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{:} \PY{n}{check\PYZus{}country2}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{country}\PY{p}{)}
+            
+            \PY{k}{return} \PY{n}{check\PYZus{}country2}    
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}8}]:} \PY{k}{def} \PY{n+nf}{imputation\PYZus{}average}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{p}{:}
+            \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{    Takes dataframe and imputes missing values for each column by using the}
+        \PY{l+s+sd}{    mean of the column. Dataframe is then returned with all column names and}
+        \PY{l+s+sd}{    indexesintact.}
+        \PY{l+s+sd}{    \PYZdq{}\PYZdq{}\PYZdq{}}
+            
+            \PY{c+c1}{\PYZsh{} Iterate over columns}
+            \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{df}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                
+                \PY{c+c1}{\PYZsh{} Calculate column mean}
+                \PY{n}{row\PYZus{}mean} \PY{o}{=} \PY{n}{df}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}
+                
+                \PY{c+c1}{\PYZsh{} Fill NaN values}
+                \PY{n}{df}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{=}\PY{n}{df}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{fillna}\PY{p}{(}\PY{n}{row\PYZus{}mean}\PY{p}{)}
+                
+            \PY{k}{return} \PY{n}{df}
+\end{Verbatim}
+
+
+     \#\# Data Wrangling
+
+    \subsubsection{Viewing the Data}\label{viewing-the-data}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}9}]:} \PY{c+c1}{\PYZsh{} Import data}
+        \PY{n}{df\PYZus{}GDP} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data\PYZus{}csv/GDPpercapitaconstant2000US.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{df\PYZus{}agric} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data\PYZus{}csv/indicator\PYZus{}t agriculture employ.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{df\PYZus{}indus} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data\PYZus{}csv/indicator\PYZus{}t industry employ.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{df\PYZus{}servi} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data\PYZus{}csv/indicator\PYZus{}t service employ.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{df\PYZus{}age} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data\PYZus{}csv/indicator\PYZus{}median age.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{df\PYZus{}ccode} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data\PYZus{}csv/country\PYZus{}codes.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}10}]:} \PY{n}{df\PYZus{}GDP}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}10}]:}                  Country         1960         1961        1962        1963  \textbackslash{}
+         0               Abkhazia          NaN          NaN         NaN         NaN   
+         1            Afghanistan          NaN          NaN         NaN         NaN   
+         2  Akrotiri and Dhekelia          NaN          NaN         NaN         NaN   
+         3                Albania          NaN          NaN         NaN         NaN   
+         4                Algeria  1280.384828  1085.414612  855.947986  1128.41578   
+         
+                   1964         1965         1966         1967         1968  \textbackslash{}
+         0          NaN          NaN          NaN          NaN          NaN   
+         1          NaN          NaN          NaN          NaN          NaN   
+         2          NaN          NaN          NaN          NaN          NaN   
+         3          NaN          NaN          NaN          NaN          NaN   
+         4  1170.323896  1215.015783  1127.614288  1200.558225  1291.863983   
+         
+               {\ldots}              2002         2003         2004         2005  \textbackslash{}
+         0     {\ldots}               NaN          NaN          NaN          NaN   
+         1     {\ldots}               NaN          NaN          NaN          NaN   
+         2     {\ldots}               NaN          NaN          NaN          NaN   
+         3     {\ldots}       1313.722725  1381.040832  1454.022854  1525.723589   
+         4     {\ldots}       1871.921986  1971.512803  2043.135713  2115.186028   
+         
+                   2006         2007         2008         2009         2010  \textbackslash{}
+         0          NaN          NaN          NaN          NaN          NaN   
+         1          NaN          NaN          NaN          NaN          NaN   
+         2          NaN          NaN          NaN          NaN          NaN   
+         3  1594.495067  1681.613910  1804.419415  1857.352947  1915.424459   
+         4  2124.957754  2155.485231  2173.787903  2192.703976  2231.980246   
+         
+                   2011  
+         0          NaN  
+         1          NaN  
+         2          NaN  
+         3  1965.707230  
+         4  2255.225482  
+         
+         [5 rows x 53 columns]
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}11}]:} \PY{n}{df\PYZus{}agric}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}11}]:}                Country  1980  1981  1982  1983  1984  1985  1986  1987  1988  \textbackslash{}
+         0              Algeria   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   
+         1       American Samoa   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   
+         2               Angola   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   
+         3             Anguilla   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   
+         4  Antigua and Barbuda   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   
+         
+            {\ldots}   1998  1999  2000  2001  2002  2003       2004  2005  2006  2007  
+         0  {\ldots}    NaN   NaN   NaN  21.1   NaN  21.1  20.700001   NaN   NaN   NaN  
+         1  {\ldots}    NaN   NaN   NaN   NaN   NaN   NaN        NaN   NaN   NaN   NaN  
+         2  {\ldots}    NaN   NaN   NaN   NaN   NaN   NaN        NaN   NaN   NaN   NaN  
+         3  {\ldots}    NaN   2.3   NaN   2.9   NaN   NaN        NaN   NaN   NaN   NaN  
+         4  {\ldots}    NaN   NaN   NaN   2.6   NaN   NaN        NaN   NaN   NaN   NaN  
+         
+         [5 rows x 29 columns]
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}12}]:} \PY{n}{df\PYZus{}indus}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}12}]:}                Country  1980  1981  1982  1983  1984  1985  1986  1987  1988  \textbackslash{}
+         0              Algeria   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   
+         1       American Samoa   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   
+         2               Angola   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   
+         3             Anguilla   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   
+         4  Antigua and Barbuda   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   
+         
+            {\ldots}   1998  1999  2000       2001  2002  2003  2004  2005  2006  2007  
+         0  {\ldots}    NaN   NaN   NaN  24.299999   NaN  24.0  26.0   NaN   NaN   NaN  
+         1  {\ldots}    NaN   NaN   NaN        NaN   NaN   NaN   NaN   NaN   NaN   NaN  
+         2  {\ldots}    NaN   NaN   NaN        NaN   NaN   NaN   NaN   NaN   NaN   NaN  
+         3  {\ldots}    NaN  20.5   NaN  18.900000   NaN   NaN   NaN   NaN   NaN   NaN  
+         4  {\ldots}    NaN   NaN   NaN  14.600000   NaN   NaN   NaN   NaN   NaN   NaN  
+         
+         [5 rows x 29 columns]
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}13}]:} \PY{n}{df\PYZus{}servi}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}13}]:}                Country  1980  1981  1982  1983  1984  1985  1986  1987  1988  \textbackslash{}
+         0              Algeria   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   
+         1       American Samoa   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   
+         2               Angola   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   
+         3             Anguilla   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   
+         4  Antigua and Barbuda   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN   
+         
+            {\ldots}   1998  1999  2000       2001  2002       2003  2004  2005  2006  2007  
+         0  {\ldots}    NaN   NaN   NaN  54.500000   NaN  54.799999  53.0   NaN   NaN   NaN  
+         1  {\ldots}    NaN   NaN   NaN        NaN   NaN        NaN   NaN   NaN   NaN   NaN  
+         2  {\ldots}    NaN   NaN   NaN        NaN   NaN        NaN   NaN   NaN   NaN   NaN  
+         3  {\ldots}    NaN  67.5   NaN  76.699997   NaN        NaN   NaN   NaN   NaN   NaN  
+         4  {\ldots}    NaN   NaN   NaN  74.599998   NaN        NaN   NaN   NaN   NaN   NaN  
+         
+         [5 rows x 29 columns]
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}14}]:} \PY{n}{df\PYZus{}age}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}14}]:}     Median age    1950    1955    1960    1965    1970    1975    1980  \textbackslash{}
+         0  Afghanistan  18.597  18.462  18.311  18.193  17.994  17.648  17.357   
+         1       AFRICA  19.173  18.862  18.434  18.020  17.690  17.524  17.505   
+         2      Albania  20.640  20.202  19.677  18.955  18.844  19.490  21.349   
+         3      Algeria  19.927  19.307  18.170  16.742  15.808  16.165  16.910   
+         4       Angola  19.401  18.882  18.244  17.481  16.987  16.828  16.652   
+         
+              1985    1990   {\ldots}      2005    2010    2015    2020    2025    2030  \textbackslash{}
+         0  17.091  16.845   {\ldots}    16.490  16.868  17.326  17.810  18.319  18.936   
+         1  17.443  17.541   {\ldots}    19.058  19.676  20.401  21.233  22.245  23.381   
+         2  22.505  23.815   {\ldots}    28.532  29.968  31.796  33.636  35.737  37.988   
+         3  17.318  18.183   {\ldots}    24.015  26.247  28.311  30.333  32.300  34.187   
+         4  16.449  16.198   {\ldots}    16.718  17.385  17.989  18.658  19.510  20.435   
+         
+              2035    2040    2045    2050  
+         0  19.775  20.918  22.196  23.522  
+         1  24.593  25.851  27.153  28.492  
+         2  40.292  42.258  43.702  44.268  
+         3  35.547  36.877  38.145  39.416  
+         4  21.623  22.891  24.197  25.561  
+         
+         [5 rows x 22 columns]
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}15}]:} \PY{n}{df\PYZus{}ccode}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}15}]:}              name alpha-2 alpha-3  country-code     iso\_3166-2   region  \textbackslash{}
+         0     Afghanistan      AF     AFG             4  ISO 3166-2:AF     Asia   
+         1   Åland Islands      AX     ALA           248  ISO 3166-2:AX   Europe   
+         2         Albania      AL     ALB             8  ISO 3166-2:AL   Europe   
+         3         Algeria      DZ     DZA            12  ISO 3166-2:DZ   Africa   
+         4  American Samoa      AS     ASM            16  ISO 3166-2:AS  Oceania   
+         
+                 sub-region  region-code  sub-region-code  
+         0    Southern Asia        142.0             34.0  
+         1  Northern Europe        150.0            154.0  
+         2  Southern Europe        150.0             39.0  
+         3  Northern Africa          2.0             15.0  
+         4        Polynesia          9.0             61.0  
+\end{Verbatim}
+            
+    From the above "heads" of the dataframes, it is possible to see that a
+LOT of data is missing from these CSV files. This is likely because data
+tracking has only become easy within the last couple of decades, this is
+especially true for countries that are still developing.
+
+Hence, this creates an immediate bias in any analysis that will be done
+in this notebook where the information about more economically developed
+countries (MEDCs) will be more accurate and complete than less
+economically developed countries (LEDCs).
+
+If there are only a couple of missing values then it is usually possible
+to impute an average and fill these spaces. However, there are many data
+series where more than 50\% of the data is missing. I will find the rows
+(countries) which have more than 70\% filled data and keep those rows.
+The rest of the rows will be dropped because they do not contain enough
+information to be of use. (At least, not in a way that produces anything
+non-artificial or low resolution.)
+
+    \subsubsection{Finding countries with "more complete"
+data}\label{finding-countries-with-more-complete-data}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}16}]:} \PY{c+c1}{\PYZsh{} Drop columns from df\PYZus{}ccode which will not be used}
+         \PY{n}{df\PYZus{}ccode}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha\PYZhy{}2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha\PYZhy{}3}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{country\PYZhy{}code}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{iso\PYZus{}3166\PYZhy{}2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{region\PYZhy{}code}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sub\PYZhy{}region\PYZhy{}code}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}17}]:} \PY{c+c1}{\PYZsh{} Rename bad label in df\PYZus{}age}
+         \PY{n}{df\PYZus{}age}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Median age}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{\PYZcb{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}18}]:} \PY{c+c1}{\PYZsh{} Create dataframe list}
+         \PY{n}{df\PYZus{}list} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{df\PYZus{}GDP}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{df\PYZus{}agric}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{df\PYZus{}indus}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{df\PYZus{}servi}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{df\PYZus{}age}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}19}]:} \PY{k}{for} \PY{n}{df} \PY{o+ow}{in} \PY{n}{df\PYZus{}list}\PY{p}{:}
+             \PY{k}{if} \PY{n}{df} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{df\PYZus{}age}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{k}{continue} \PY{c+c1}{\PYZsh{} Skip df\PYZus{}age, no NaN values}
+             \PY{n}{plot\PYZus{}nan\PYZus{}density\PYZus{}year}\PY{p}{(}\PY{n+nb}{eval}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{p}{,} \PY{n}{df}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_25_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_25_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_25_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_25_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    In these plots we can see how NaN density drops over time and suddenly
+spikes after the turn of the millenia, I am not exactly sure as to why
+this is but it's worth noting.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}20}]:} \PY{c+c1}{\PYZsh{} Calculate Non\PYZhy{}NaN density for each country}
+         \PY{n}{meta\PYZus{}df\PYZus{}NaN\PYZus{}Density} \PY{o}{=} \PY{n}{calculate\PYZus{}nan\PYZus{}density\PYZus{}country}\PY{p}{(}\PY{n}{df\PYZus{}list}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{} Fix indexing issues}
+         \PY{n}{meta\PYZus{}df\PYZus{}NaN\PYZus{}Density}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+         \PY{n}{meta\PYZus{}df\PYZus{}NaN\PYZus{}Density}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{index}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{\PYZcb{}}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+         
+         \PY{n}{meta\PYZus{}df\PYZus{}NaN\PYZus{}Density}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}20}]:} Country    Country    df\_GDP   df\_agric   df\_indus   df\_servi df\_age
+         0          Algeria         1   0.107143   0.107143   0.107143      1
+         1           Angola  0.519231  0.0357143  0.0357143  0.0357143      1
+         2        Argentina         1   0.714286   0.714286   0.714286      1
+         3          Armenia  0.423077   0.214286   0.214286   0.214286      1
+         4            Aruba  0.326923  0.0714286  0.0714286  0.0714286      1
+\end{Verbatim}
+            
+    So now it is possible to see which countries have the most complete
+data. The threshold used for this analysis will be 70\% non-NaN data but
+this threshold can be changed for furether experimentation if one
+wishes.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}21}]:} \PY{c+c1}{\PYZsh{} Find countries with Non\PYZhy{}NaN densities higher than 0.7}
+         \PY{n}{threshold} \PY{o}{=} \PY{l+m+mf}{0.70}
+         \PY{n}{mdND\PYZus{}70} \PY{o}{=} \PY{n}{meta\PYZus{}df\PYZus{}NaN\PYZus{}Density}\PY{p}{[}\PY{p}{(}\PY{n}{meta\PYZus{}df\PYZus{}NaN\PYZus{}Density}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{df\PYZus{}GDP}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{n}{threshold}\PY{p}{)} \PY{o}{\PYZam{}}\PYZbs{}
+                                       \PY{p}{(}\PY{n}{meta\PYZus{}df\PYZus{}NaN\PYZus{}Density}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{df\PYZus{}agric}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{n}{threshold}\PY{p}{)} \PY{o}{\PYZam{}}\PYZbs{}
+                                       \PY{p}{(}\PY{n}{meta\PYZus{}df\PYZus{}NaN\PYZus{}Density}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{df\PYZus{}indus}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{n}{threshold}\PY{p}{)} \PY{o}{\PYZam{}}\PYZbs{}
+                                       \PY{p}{(}\PY{n}{meta\PYZus{}df\PYZus{}NaN\PYZus{}Density}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{df\PYZus{}servi}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{n}{threshold}\PY{p}{)} \PY{o}{\PYZam{}}\PYZbs{}
+                                       \PY{p}{(}\PY{n}{meta\PYZus{}df\PYZus{}NaN\PYZus{}Density}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{df\PYZus{}age}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{n}{threshold}\PY{p}{)}\PY{p}{]}
+         
+         \PY{c+c1}{\PYZsh{} Join with df\PYZus{}ccode to determine general locations of countries}
+         \PY{n}{df\PYZus{}ccode}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{name}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{\PYZcb{}}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+         \PY{n}{mdND\PYZus{}70} \PY{o}{=} \PY{n}{df\PYZus{}ccode}\PY{o}{.}\PY{n}{merge}\PY{p}{(}\PY{n}{right} \PY{o}{=} \PY{n}{mdND\PYZus{}70}\PY{p}{,} \PY{n}{how}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{inner}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{on}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{} Define countries to investigate}
+         \PY{n}{country\PYZus{}list} \PY{o}{=} \PY{n+nb}{list}\PY{p}{(}\PY{n}{mdND\PYZus{}70}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+         
+         \PY{n}{mdND\PYZus{}70}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}21}]:}      Country    region                 sub-region    df\_GDP  df\_agric  \textbackslash{}
+         0  Argentina  Americas              South America         1  0.714286   
+         1  Australia   Oceania  Australia and New Zealand         1         1   
+         2    Austria    Europe             Western Europe         1  0.892857   
+         3   Barbados  Americas                  Caribbean  0.961538  0.857143   
+         4    Belgium    Europe             Western Europe         1  0.785714   
+         
+            df\_indus  df\_servi df\_age  
+         0  0.714286  0.714286      1  
+         1         1         1      1  
+         2  0.892857  0.892857      1  
+         3  0.857143  0.857143      1  
+         4  0.785714  0.785714      1  
+\end{Verbatim}
+            
+    Now that we know which countries have complete data, we can aggregate
+this data so that we know what regions or sub-regions these countries
+come from.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}22}]:} \PY{c+c1}{\PYZsh{} Count rows by region}
+         \PY{n}{mdND\PYZus{}70}\PY{o}{.}\PY{n}{groupby}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{region}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{count}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}22}]:} region
+         Africa       1
+         Americas    10
+         Asia        10
+         Europe      15
+         Oceania      1
+         Name: Country, dtype: int64
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}23}]:} \PY{c+c1}{\PYZsh{} Count rows by sub\PYZhy{}region}
+         \PY{n}{mdND\PYZus{}70}\PY{o}{.}\PY{n}{groupby}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sub\PYZhy{}region}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{count}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}23}]:} sub-region
+         Australia and New Zealand    1
+         Caribbean                    3
+         Central America              3
+         Eastern Asia                 1
+         Eastern Europe               1
+         Northern Africa              1
+         Northern America             1
+         Northern Europe              5
+         South America                3
+         South-Eastern Asia           5
+         Southern Asia                1
+         Southern Europe              4
+         Western Asia                 3
+         Western Europe               5
+         Name: Country, dtype: int64
+\end{Verbatim}
+            
+    As we can see, most of the data comes from The Americas, Europe and
+Asia. Data from Africa is relatively incomplete which makes it harder to
+do analysis on it without completely fabricating the data. This is a
+bias that will just need to be accepted for this analysis, to improve in
+this bias more complete data over Africa will need to be recorded in the
+future which will become easier as the contitnent's infrastructures
+develop.
+
+    \subsubsection{Update Dataframes}\label{update-dataframes}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}24}]:} \PY{c+c1}{\PYZsh{} Update dataframes in df\PYZus{}T\PYZus{}List to contain the relevant countries}
+         \PY{n}{df\PYZus{}GDP} \PY{o}{=} \PY{n}{df\PYZus{}GDP}\PY{p}{[}\PY{n}{df\PYZus{}GDP}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isin}\PY{p}{(}\PY{n}{country\PYZus{}list}\PY{p}{)}\PY{p}{]}
+         \PY{n}{df\PYZus{}agric} \PY{o}{=} \PY{n}{df\PYZus{}agric}\PY{p}{[}\PY{n}{df\PYZus{}agric}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isin}\PY{p}{(}\PY{n}{country\PYZus{}list}\PY{p}{)}\PY{p}{]}
+         \PY{n}{df\PYZus{}indus} \PY{o}{=} \PY{n}{df\PYZus{}indus}\PY{p}{[}\PY{n}{df\PYZus{}indus}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isin}\PY{p}{(}\PY{n}{country\PYZus{}list}\PY{p}{)}\PY{p}{]}
+         \PY{n}{df\PYZus{}servi} \PY{o}{=} \PY{n}{df\PYZus{}servi}\PY{p}{[}\PY{n}{df\PYZus{}servi}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isin}\PY{p}{(}\PY{n}{country\PYZus{}list}\PY{p}{)}\PY{p}{]}
+         \PY{n}{df\PYZus{}age} \PY{o}{=} \PY{n}{df\PYZus{}age}\PY{p}{[}\PY{n}{df\PYZus{}age}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isin}\PY{p}{(}\PY{n}{country\PYZus{}list}\PY{p}{)}\PY{p}{]}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}25}]:} \PY{c+c1}{\PYZsh{} Impute NaN values \PYZhy{} Once again, no need to do anything with df\PYZus{}age}
+         \PY{n}{df\PYZus{}GDP} \PY{o}{=} \PY{n}{imputation\PYZus{}average}\PY{p}{(}\PY{n}{df\PYZus{}GDP}\PY{p}{)}
+         \PY{n}{df\PYZus{}agric} \PY{o}{=} \PY{n}{imputation\PYZus{}average}\PY{p}{(}\PY{n}{df\PYZus{}agric}\PY{p}{)}
+         \PY{n}{df\PYZus{}indus} \PY{o}{=} \PY{n}{imputation\PYZus{}average}\PY{p}{(}\PY{n}{df\PYZus{}indus}\PY{p}{)}
+         \PY{n}{df\PYZus{}servi} \PY{o}{=} \PY{n}{imputation\PYZus{}average}\PY{p}{(}\PY{n}{df\PYZus{}servi}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}26}]:} \PY{c+c1}{\PYZsh{}\PYZsh{} check column values are appropriate}
+         \PY{c+c1}{\PYZsh{}df\PYZus{}GDP.info()}
+         \PY{c+c1}{\PYZsh{}df\PYZus{}agric.info()}
+         \PY{c+c1}{\PYZsh{}df\PYZus{}indus.info()}
+         \PY{c+c1}{\PYZsh{}df\PYZus{}servi.info()}
+\end{Verbatim}
+
+
+    Since the columns all have floating point values, there is not much
+point looking at the dataframe info, but that might be fun to look at if
+you're interesed. For now I'll just leave this code as comments because
+I'd rather it didn't execute and waste space. I'm just noting this step
+so that you guys know that I didn't forget.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}27}]:} \PY{c+c1}{\PYZsh{} Change percentage range from 0\PYZhy{}100 to 0\PYZhy{}1}
+         \PY{n}{df\PYZus{}agric}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{df\PYZus{}agric}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{divide}\PY{p}{(}\PY{n}{other}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{)}
+         \PY{n}{df\PYZus{}indus}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{df\PYZus{}indus}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{divide}\PY{p}{(}\PY{n}{other}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{)}
+         \PY{n}{df\PYZus{}servi}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{df\PYZus{}servi}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{divide}\PY{p}{(}\PY{n}{other}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}28}]:} \PY{c+c1}{\PYZsh{} Merge region and sub\PYZhy{}region into dataframes}
+         \PY{n}{df\PYZus{}GDP} \PY{o}{=} \PY{n}{df\PYZus{}ccode}\PY{o}{.}\PY{n}{merge}\PY{p}{(}\PY{n}{right} \PY{o}{=} \PY{n}{df\PYZus{}GDP}\PY{p}{,} \PY{n}{how}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{inner}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{on}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{df\PYZus{}agric} \PY{o}{=} \PY{n}{df\PYZus{}ccode}\PY{o}{.}\PY{n}{merge}\PY{p}{(}\PY{n}{right} \PY{o}{=} \PY{n}{df\PYZus{}agric}\PY{p}{,} \PY{n}{how}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{inner}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{on}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{df\PYZus{}indus} \PY{o}{=} \PY{n}{df\PYZus{}ccode}\PY{o}{.}\PY{n}{merge}\PY{p}{(}\PY{n}{right} \PY{o}{=} \PY{n}{df\PYZus{}indus}\PY{p}{,} \PY{n}{how}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{inner}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{on}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{df\PYZus{}servi}\PY{o}{=} \PY{n}{df\PYZus{}ccode}\PY{o}{.}\PY{n}{merge}\PY{p}{(}\PY{n}{right} \PY{o}{=} \PY{n}{df\PYZus{}servi}\PY{p}{,} \PY{n}{how}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{inner}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{on}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{df\PYZus{}age} \PY{o}{=} \PY{n}{df\PYZus{}ccode}\PY{o}{.}\PY{n}{merge}\PY{p}{(}\PY{n}{right} \PY{o}{=} \PY{n}{df\PYZus{}age}\PY{p}{,} \PY{n}{how}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{inner}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{on}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Country}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}29}]:} \PY{n}{df\PYZus{}GDP}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}29}]:}      Country    region                 sub-region         1960         1961  \textbackslash{}
+         0  Argentina  Americas              South America  5251.876754  5448.303627   
+         1  Australia   Oceania  Australia and New Zealand  9407.685082  9451.546304   
+         2    Austria    Europe             Western Europe  7434.183717  7802.972546   
+         3   Barbados  Americas                  Caribbean  3396.945712  3646.654780   
+         4    Belgium    Europe             Western Europe  7454.716536  7799.889081   
+         
+                   1962         1963          1964          1965          1966  \textbackslash{}
+         0  5316.578969  4956.216522   5375.463707   5855.611563   5733.311946   
+         1  9351.023272  9749.128563  10231.144465  10633.094400  10635.677912   
+         2  7960.707270  8237.060529   8683.454516   8927.460698   9365.306134   
+         3  3961.399895  3744.022688   3915.325593   4347.904449   4509.680501   
+         4  8173.818456  8465.979625   8969.632551   9205.035593   9431.614088   
+         
+                {\ldots}               2002          2003          2004          2005  \textbackslash{}
+         0      {\ldots}        6428.393836   6933.155594   7492.249508   8107.975365   
+         1      {\ldots}       22402.991019  22825.571022  23498.261991  23929.164397   
+         2      {\ldots}       24375.113835  24466.706298  24945.047766  25370.465866   
+         3      {\ldots}        8717.534639   8873.568078   9181.616033   9454.342464   
+         4      {\ldots}       23008.449937  23097.212617  23750.459812  24033.783302   
+         
+                    2006          2007          2008          2009          2010  \textbackslash{}
+         0   8717.176296   9388.688523   9935.834246   9933.229024  10749.319224   
+         1  24295.081380  24765.548902  25190.720626  25007.697756  25190.839860   
+         2  26171.690912  27036.487332  27305.923295  26183.997598  26642.993858   
+         3   9757.443433   9783.984173   9781.356913   9243.587053   7297.016106   
+         4  24512.413136  25034.666923  25082.374127  24190.594952  24550.396553   
+         
+                    2011  
+         0  11601.630223  
+         1  25306.824938  
+         2  27266.403350  
+         3   7297.016106  
+         4  24733.626956  
+         
+         [5 rows x 55 columns]
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}30}]:} \PY{n}{df\PYZus{}agric}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}30}]:}      Country    region                 sub-region      1980     1981     1982  \textbackslash{}
+         0  Argentina  Americas              South America  0.006750  0.00675  0.00100   
+         1  Australia   Oceania  Australia and New Zealand  0.065000  0.06500  0.06400   
+         2    Austria    Europe             Western Europe  0.070680  0.07068  0.07068   
+         3   Barbados  Americas                  Caribbean  0.061167  0.09400  0.08600   
+         4    Belgium    Europe             Western Europe  0.031000  0.03100  0.03100   
+         
+             1983   1984     1985     1986    {\ldots}      1998   1999   2000   2001  \textbackslash{}
+         0  0.003  0.003  0.00675  0.00675    {\ldots}     0.008  0.007  0.007  0.008   
+         1  0.066  0.062  0.06200  0.06000    {\ldots}     0.049  0.050  0.050  0.048   
+         2  0.099  0.094  0.09000  0.08600    {\ldots}     0.066  0.062  0.059  0.057   
+         3  0.080  0.091  0.08500  0.08200    {\ldots}     0.044  0.043  0.037  0.042   
+         4  0.031  0.031  0.03100  0.03000    {\ldots}     0.023  0.020  0.018  0.016   
+         
+             2002   2003   2004      2005      2006      2007  
+         0  0.010  0.014  0.012  0.011000  0.008000  0.006750  
+         1  0.045  0.039  0.038  0.036000  0.035000  0.034000  
+         2  0.057  0.056  0.050  0.055000  0.055000  0.057000  
+         3  0.040  0.046  0.033  0.061167  0.061167  0.061167  
+         4  0.017  0.017  0.020  0.020000  0.020000  0.024409  
+         
+         [5 rows x 31 columns]
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}31}]:} \PY{n}{df\PYZus{}indus}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}31}]:}      Country    region                 sub-region      1980     1981     1982  \textbackslash{}
+         0  Argentina  Americas              South America  0.263100  0.26310  0.29300   
+         1  Australia   Oceania  Australia and New Zealand  0.310000  0.30500  0.29700   
+         2    Austria    Europe             Western Europe  0.330560  0.33056  0.33056   
+         3   Barbados  Americas                  Caribbean  0.207542  0.21600  0.23600   
+         4    Belgium    Europe             Western Europe  0.343000  0.32800  0.31800   
+         
+             1983   1984    1985    1986    {\ldots}      1998   1999   2000   2001   2002  \textbackslash{}
+         0  0.292  0.309  0.2631  0.2631    {\ldots}     0.248  0.236  0.227  0.219  0.202   
+         1  0.284  0.280  0.2710  0.2660    {\ldots}     0.218  0.213  0.218  0.209  0.210   
+         2  0.388  0.381  0.3810  0.3780    {\ldots}     0.304  0.306  0.306  0.299  0.296   
+         3  0.234  0.228  0.2320  0.2220    {\ldots}     0.209  0.214  0.204  0.196  0.187   
+         4  0.310  0.304  0.2980  0.2920    {\ldots}     0.251  0.267  0.263  0.260  0.254   
+         
+             2003   2004      2005      2006      2007  
+         0  0.217  0.230  0.235000  0.237000  0.263100  
+         1  0.210  0.212  0.211000  0.212000  0.212000  
+         2  0.296  0.278  0.276000  0.282000  0.273000  
+         3  0.176  0.173  0.207542  0.207542  0.207542  
+         4  0.248  0.249  0.247000  0.247000  0.276455  
+         
+         [5 rows x 31 columns]
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}32}]:} \PY{n}{df\PYZus{}servi}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}32}]:}      Country    region                 sub-region      1980     1981     1982  \textbackslash{}
+         0  Argentina  Americas              South America  0.708450  0.70845  0.59500   
+         1  Australia   Oceania  Australia and New Zealand  0.624000  0.62700  0.63700   
+         2    Austria    Europe             Western Europe  0.596280  0.59628  0.59628   
+         3   Barbados  Americas                  Caribbean  0.660417  0.69100  0.67700   
+         4    Belgium    Europe             Western Europe  0.626000  0.64000  0.65100   
+         
+             1983   1984     1985     1986    {\ldots}      1998   1999   2000   2001  \textbackslash{}
+         0  0.585  0.566  0.70845  0.70845    {\ldots}     0.740  0.753  0.762  0.769   
+         1  0.648  0.655  0.66700  0.67400    {\ldots}     0.733  0.737  0.733  0.742   
+         2  0.512  0.522  0.52600  0.53200    {\ldots}     0.629  0.631  0.634  0.643   
+         3  0.685  0.681  0.68300  0.69500    {\ldots}     0.628  0.640  0.644  0.655   
+         4  0.659  0.665  0.67100  0.67800    {\ldots}     0.679  0.708  0.714  0.719   
+         
+             2002   2003   2004      2005      2006      2007  
+         0  0.785  0.763  0.755  0.751000  0.752000  0.708450  
+         1  0.745  0.750  0.748  0.750000  0.750000  0.751000  
+         2  0.645  0.647  0.670  0.667000  0.661000  0.668000  
+         3  0.659  0.668  0.697  0.660417  0.660417  0.660417  
+         4  0.726  0.732  0.728  0.726000  0.728000  0.685727  
+         
+         [5 rows x 31 columns]
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}33}]:} \PY{n}{df\PYZus{}age}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}33}]:}      Country    region                 sub-region    1950    1955    1960  \textbackslash{}
+         0  Argentina  Americas              South America  25.657  26.471  27.070   
+         1  Australia   Oceania  Australia and New Zealand  30.379  30.158  29.608   
+         2    Austria    Europe             Western Europe  35.696  35.201  35.524   
+         3   Barbados  Americas                  Caribbean  24.558  24.271  22.320   
+         4    Belgium    Europe             Western Europe  35.526  34.713  35.246   
+         
+              1965    1970    1975    1980   {\ldots}      2005    2010    2015    2020  \textbackslash{}
+         0  27.398  27.593  27.663  27.377   {\ldots}    29.120  30.439  31.615  32.837   
+         1  28.295  27.608  28.019  29.380   {\ldots}    36.553  37.776  38.842  39.600   
+         2  34.972  33.892  33.818  34.671   {\ldots}    39.953  41.768  43.495  44.785   
+         3  20.646  21.213  23.694  24.494   {\ldots}    35.530  37.771  39.992  41.715   
+         4  34.752  34.580  34.037  34.210   {\ldots}    40.232  41.301  42.380  43.175   
+         
+              2025    2030    2035    2040    2045    2050  
+         0  34.147  35.551  36.931  38.163  39.271  40.386  
+         1  40.432  41.213  41.925  42.440  42.728  42.937  
+         2  45.604  46.579  47.460  48.196  48.655  48.543  
+         3  43.497  45.284  46.885  48.059  48.657  48.614  
+         4  43.742  44.231  44.628  44.925  44.879  44.684  
+         
+         [5 rows x 24 columns]
+\end{Verbatim}
+            
+    This marks the completion of the data wrangling section. Wiring about it
+now makes it look easy but this took me a couple days of solid work in
+order to do this, very good experience for the future.
+
+     \#\# Exploratory Data Analysis
+
+    Just as a refresher, here are the questions which I wanted to answer
+using this dataset:
+
+Directing questions: * As a country develops, how does the composition
+of its workforce change? * Which regions have progressed fastest in
+terms of GDP? * How does median age change with GDP?
+
+Hence, * What can these countries expect as their GDP rises?
+
+You can also view these questions in terms of region/sub-region
+
+    \subsubsection{As a country develops, how does the composition of its
+workforce
+change?}\label{as-a-country-develops-how-does-the-composition-of-its-workforce-change}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}34}]:} \PY{c+c1}{\PYZsh{} Plot sample average GDP over time}
+         \PY{n}{basic\PYZus{}plot}\PY{p}{(}\PY{n}{x\PYZus{}series}\PY{o}{=}\PY{n}{df\PYZus{}GDP}\PY{o}{.}\PY{n}{columns}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{:}\PY{p}{]}\PY{p}{,} 
+                    \PY{n}{y\PYZus{}series}\PY{o}{=}\PY{n}{df\PYZus{}GDP}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{p}{,} 
+                    \PY{n}{x\PYZus{}label}\PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Year (C.E.)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+                    \PY{n}{y\PYZus{}label}\PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GDP mean}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                    \PY{n}{plt\PYZus{}title}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Global Mean GDP(USD in 2000, adj. for inf.)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_50_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    I just wanted to quickly show that it is true that countries tend to
+rise in GDP over time. That down-tick in 2008 is the credit-crunch
+ofcourse.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}35}]:} \PY{c+c1}{\PYZsh{} Plot global average employment ratio over time}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{df\PYZus{}indus}\PY{o}{.}\PY{n}{columns}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{int}\PY{p}{)}\PY{p}{,} \PY{n}{df\PYZus{}indus}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{p}{,} 
+                  \PY{n}{c}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Industry}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{df\PYZus{}agric}\PY{o}{.}\PY{n}{columns}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{int}\PY{p}{)}\PY{p}{,} \PY{n}{df\PYZus{}agric}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{p}{,} 
+                  \PY{n}{c}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Agriculture}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{df\PYZus{}servi}\PY{o}{.}\PY{n}{columns}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{int}\PY{p}{)}\PY{p}{,} \PY{n}{df\PYZus{}servi}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{p}{,}
+                   \PY{n}{c}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{green}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Service}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Year (C.E.)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{c+c1}{\PYZsh{}plt.yticks((0, 0.25, 0.5, 0.75, 1))}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ratio Employed}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Global Mean Employment(Ratio) by Sector over time}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_52_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    As we can see above, as a country develops there is a tendency for
+employment in service to increase and for employment in
+industry/agriculture to decrease. The time series of this data is too
+short to show what happened during the industrial revolution but if we
+were to look back that far we would likely find that most people were
+employed in agriculture and as technology made it possible to do greater
+work on the fields without as many workers, this changed as workers went
+into industry. Now, with the information revolution, we see an
+increasing amount of people going into the service industry as
+industrial jobs become automated.
+
+This trend, where automation heavily effects what people do for a living
+is going to continue into the future. As to what that will mean for us
+we can't really see from this data because one would need more recent
+data where AI is playing a grater role in our soceity, during 2005 only
+the precurors of what comes in the next decade can be seen.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}36}]:} \PY{c+c1}{\PYZsh{} Calculating correlation coefficients}
+         \PY{n}{corr\PYZus{}coeff\PYZus{}GDP\PYZus{}servi} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{corrcoef}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{n}{df\PYZus{}GDP}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{20}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{n}{df\PYZus{}servi}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+         \PY{n}{corr\PYZus{}coeff\PYZus{}agric\PYZus{}indus} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{corrcoef}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{n}{df\PYZus{}agric}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{n}{df\PYZus{}indus}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}37}]:} \PY{c+c1}{\PYZsh{} Calculate correlation coefficient between GDP and service employment \PYZpc{}}
+         \PY{n}{corr\PYZus{}coeff\PYZus{}GDP\PYZus{}servi}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}37}]:} array([[ 1.        ,  0.98120669],
+                [ 0.98120669,  1.        ]])
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}38}]:} \PY{c+c1}{\PYZsh{} Calculating correlation coefficients}
+         \PY{n}{corr\PYZus{}coeff\PYZus{}agric\PYZus{}indus} 
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}38}]:} array([[ 1.        ,  0.85837619],
+                [ 0.85837619,  1.        ]])
+\end{Verbatim}
+            
+    We can see here how GDP and service employment and a 98.3\% correlation
+with each other, the employment in agriculture and industry are also
+strongly correlated.
+
+However, is this correlation causal? We can use a t-test to figure out
+whether this is the case.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}39}]:} \PY{c+c1}{\PYZsh{} Perform t\PYZhy{}test on Service Employment ratio and GDP}
+         \PY{n}{serv\PYZus{}ratio\PYZus{}series} \PY{o}{=} \PY{n}{df\PYZus{}GDP}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{20}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{4}\PY{p}{]}
+         \PY{n}{GDP\PYZus{}series} \PY{o}{=} \PY{n}{df\PYZus{}servi}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}
+         \PY{n}{t\PYZus{}test\PYZus{}serv\PYZus{}GDP} \PY{o}{=} \PY{n}{ttest\PYZus{}ind}\PY{p}{(}\PY{n}{serv\PYZus{}ratio\PYZus{}series}\PY{p}{,} \PY{n}{GDP\PYZus{}series}\PY{p}{)} \PY{c+c1}{\PYZsh{} Imported from Sci\PYZhy{}Py Stats}
+         
+         \PY{n}{t\PYZus{}test\PYZus{}serv\PYZus{}GDP}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}39}]:} Ttest\_indResult(statistic=27.152068970662953, pvalue=3.7059682395711783e-33)
+\end{Verbatim}
+            
+    The p-value of the t-test is almost 0 which shows that the strong
+correlation is unlikely to be a coincidence and that there is a sort of
+causal link here. Whether or not GDP causes a higher \%employment in
+service industries or \emph{vice. versa.} is not known but at least it's
+worth knowing that these two features are correlated in this way.
+
+    \subsubsection{Which regions have progressed fastest in terms of
+GDP?}\label{which-regions-have-progressed-fastest-in-terms-of-gdp}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}40}]:} \PY{c+c1}{\PYZsh{} Grouping GDP by region}
+         \PY{n}{ax} \PY{o}{=} \PY{n}{df\PYZus{}GDP}\PY{o}{.}\PY{n}{groupby}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{region}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{T}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{title}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Region Mean Change in GDP (USD in 2000, adj. for inf.)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Year (C.E.)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GDP}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}40}]:} Text(0,0.5,'GDP')
+\end{Verbatim}
+            
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_61_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    We can see here how certain continents have had an increase in
+productivity over time. It should be noted that Oceania and Africa
+represent the top GDP in their region instead of their average due to
+there being only one country being used for this analysis in both
+datasets.
+
+The americas also also skewed upward due to the presence of North
+America which has a much higher GDP than the rest of america as can be
+seen from the plots below where I broke things down by sub-region.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}41}]:} \PY{c+c1}{\PYZsh{} How about Countries within a region?}
+         \PY{k}{for} \PY{n}{region} \PY{o+ow}{in} \PY{n}{df\PYZus{}GDP}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{region}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{unique}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+             \PY{n}{ax} \PY{o}{=} \PY{n}{df\PYZus{}GDP}\PY{p}{[}\PY{n}{df\PYZus{}GDP}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{region}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{n}{region}\PY{p}{]}\PY{o}{.}\PY{n}{groupby}\PY{p}{(}
+                     \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sub\PYZhy{}region}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{T}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{title}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Change in GDP (USD in 2000, adj. for inf.) over time in }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{region}\PY{p}{)}\PY{p}{)}
+             \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Year (C.E.)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+             \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GDP}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_63_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_63_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_63_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_63_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_63_4.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    How you display your data makes a large difference in how you interpret
+it. In the previous
+\href{https://www.youtube.com/watch?v=sIlNIVXpIns}{graph}, it looked as
+if Africa had barely made any improvement on its productivity. However
+this is only because of it being compared to countries that have had an
+increased rate of productivity for quite some time now. (If you're
+indterested for why this is you can read the book by
+\href{https://en.wikipedia.org/wiki/Guns,_Germs,_and_Steel}{"Guns, Germs
+and Steel" by Jared Diamond})
+
+When viewed on its own, Northern Africa had five-fold increase in
+productivity which is very promising. Furthermore, as the infrastructure
+develops, this rate of productivity increase will likely increase. It
+should still be noted that this is still one region of one of the
+largest continents on the planet and that regions with less economic
+development are missing from the data and so there is a bias which makes
+the situation look a little better than it is.
+
+Interestingly, it is also possible to see how all have come level of
+inequality, where one sub-region has a higher GDP than the rest of the
+region. Perhaps this is due things like capital cities where most of the
+productivity that counts toward GDP is carried out?
+
+    \subsubsection{How does median age change with
+GDP?}\label{how-does-median-age-change-with-gdp}
+
+    So we have discovered that GDP and employment in the service industry
+are tightly linked and they are both proportional with time.
+
+The decline in the agricultural and industrial industries are likely
+correlated with the growth of technology since the industrial
+revolution.
+
+I also wanted to make a couple of quick graphs showing median age for my
+selection of countries. To do this I will create a violin plot which
+shows the median age for every half decade.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}53}]:} \PY{c+c1}{\PYZsh{} Seaborn set style    }
+         \PY{n}{sns}\PY{o}{.}\PY{n}{set\PYZus{}style}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{whitegrid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{} Plot before and after world age distribution}
+         \PY{n}{ax} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{violinplot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{df\PYZus{}age}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{8}\PY{p}{]}\PY{p}{)}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Median Age over time}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_67_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Here we can see that in 1995 the median age was roughly 25 across the
+globe, but with a split between the "rich" and "poor" countries. Over 60
+years of this graph we can see how the median age is pulled upward
+signifying a much longer lifespan than before.
+
+The before/after effects can be seen most starkly when thee instances
+are seen side by side. For the sake of vareity, I'll use a boxplot
+instead of a violin plot.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}54}]:} \PY{c+c1}{\PYZsh{} Create boxplot}
+         \PY{n}{sns}\PY{o}{.}\PY{n}{boxplot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{df\PYZus{}age}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{1950}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{2010}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{)}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Median age }\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{before after}\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{ contrast}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_69_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    The world median has increased from roughly 25 years of age to 37 years
+of age. The median lifespan is so much higher that the top of the
+interquartile range (30) is now easily exceeded by 75\% of the data in
+2010.
+
+     \#\# Conclusions
+
+    \begin{itemize}
+\item
+  It was found that countries on average tend to rise in GDP. Although
+  it is suspected that this is due to technological development, from
+  this data alone it is not possible to say why. (This trend can also be
+  seen when making discreete plots.)
+
+  \begin{itemize}
+  \item
+    However, as GDP rises, so does the percentage of people employed in
+    the service sector, away from service and agriculture which have a
+    correlation coefficient of 0.87.
+  \item
+    This shows that as people leave the agriculture and industrial
+    sectors, they'll tend to enter into the service sector.
+  \end{itemize}
+\item
+  The correlation between the service sector and GDP is 0.98, which is
+  very strong.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The probability that this is due to random chance is roughly 5e-33
+    (very low) which suggests that there is some sort of a causal link
+    although directionality was not determined in this study.
+  \end{itemize}
+\item
+  People are living much longer lives with the median age having risen
+  substantially in the 60 years that the data shows.
+\end{itemize}
+
+It is important to keep in mind that this analysis has limitations due
+to GDP not being adjusted for differences in costs of living between
+countries. Missing data also means that this analysis is better suited
+for countries that are not experiencing extreme povery (which is most
+countries these days), many countries were dropped for having low data
+quality. This data is also over the course of roughly 20 years, which is
+too short a time scale to see how technology has impacted soceity over
+the course of time since the start of the industrial revolution which is
+where increased productivity and standards of living all started.
+
+Naturally, the million-dollar question is "how will AI and qutomation"
+effect job sectors in the years to come? This question is difficult to
+answer because we're not sure what effects AI will have on our economy
+but answering it means a strategic advantage for whoever can make the
+right analysis.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
